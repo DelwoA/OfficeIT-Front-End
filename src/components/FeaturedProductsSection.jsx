@@ -6,7 +6,7 @@ import { featuredProducts } from "@/data/products";
 const FeaturedProductsSection = () => {
   return (
     <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-7">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 sm:mb-10 gap-4">
           <h2 className="text-2xl sm:text-3xl font-bold">Featured Products</h2>
           <Link

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const HomeCTASection = () => {
   return (
     <section className="py-16 bg-gradient-to-r from-blue-900 to-purple-900 text-white">
-      <div className="container mx-auto px-4 text-center">
+      <div className="container mx-auto px-7 text-center">
         <h2 className="text-2xl sm:text-3xl font-bold mb-6">
           Ready to Upgrade Your Office?
         </h2>
