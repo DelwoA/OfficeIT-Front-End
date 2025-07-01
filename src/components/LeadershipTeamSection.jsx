@@ -33,20 +33,21 @@ const LeadershipTeamSection = () => {
           </div>
           <div className="bg-white rounded-lg overflow-hidden shadow-md">
             <img
-              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-              alt="CTO"
+              src="public/chathuranga.png"
+              alt="Chathuranga Bandara, Managing Director"
               className="w-full h-48 sm:h-64 object-cover"
             />
             <div className="p-4 sm:p-6">
               <h3 className="text-lg sm:text-xl font-semibold mb-1">
-                Sarah Williams
+                Chathuranga Bandara
               </h3>
               <p className="text-purple-700 mb-2 sm:mb-3 text-sm sm:text-base">
-                Chief Technology Officer
+                Managing Director
               </p>
               <p className="text-gray-600 text-sm sm:text-base">
-                Sarah oversees our technical strategy and ensures we remain at
-                the forefront of technological advancements in the industry.
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iure
+                eveniet aspernatur eligendi non sapiente unde fugiat sed ipsum
+                laboriosam necessitatibus.
               </p>
             </div>
           </div>

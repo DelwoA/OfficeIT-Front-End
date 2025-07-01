@@ -21,8 +21,9 @@ const CorePrinciplesSection = () => {
               Our Vision
             </h3>
             <p className="text-gray-600 text-sm sm:text-base">
-              To revolutionize workplace technology through innovative solutions
-              that empower businesses to thrive in the digital age.
+              To be the leading provider of innovative and reliable office
+              automation solutions that empower businesses to achieve
+              operational excellence and digital transformation.
             </p>
           </div>
           <div className="bg-white p-6 sm:p-8 rounded-lg shadow-md">
@@ -33,8 +34,10 @@ const CorePrinciplesSection = () => {
               Our Mission
             </h3>
             <p className="text-gray-600 text-sm sm:text-base">
-              Delivering cutting-edge IT solutions that enhance productivity,
-              security, and efficiency for modern workplaces.
+              To deliver high-quality, cost-effective office automation products
+              and services that boost workplace productivity, streamline
+              operations, and offer exceptional customer support — all while
+              embracing sustainability and technological progress.
             </p>
           </div>
           <div className="bg-white p-6 sm:p-8 rounded-lg shadow-md">
@@ -45,8 +48,9 @@ const CorePrinciplesSection = () => {
               Our Values
             </h3>
             <p className="text-gray-600 text-sm sm:text-base">
-              Integrity, innovation, excellence, and customer-centricity form
-              the foundation of our business practices and relationships.
+              Customer focus, innovation, integrity, reliability,
+              sustainability, teamwork, and a commitment to excellence form the
+              foundation of everything we do at Office IT.
             </p>
           </div>
         </div>

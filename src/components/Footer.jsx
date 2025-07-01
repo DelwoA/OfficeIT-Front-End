@@ -33,27 +33,33 @@ const Footer = () => {
               provide high-quality products with exceptional service.
             </p>
             <div className="flex justify-center md:justify-start space-x-4">
-              <a
-                href="#"
+              <Link
+                to="https://www.facebook.com/Officeitpvtltd"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors duration-200"
                 aria-label="Facebook"
               >
                 <Facebook size={20} />
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                to="https://www.instagram.com/officeitpvtltd/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors duration-200"
                 aria-label="Instagram"
               >
                 <Instagram size={20} />
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                to="https://wa.me/94725828283"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors duration-200"
                 aria-label="WhatsApp"
               >
                 <WhatsAppIcon size={20} />
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -100,24 +106,40 @@ const Footer = () => {
           <div className="text-center md:text-left">
             <h3 className="text-lg font-semibold mb-6">Contact Us</h3>
             <ul className="space-y-4">
-              <li className="flex items-start justify-center md:justify-start">
-                <MapPin className="mr-3 h-5 w-5 text-purple-500 flex-shrink-0 mt-0.5" />
-                <span className="text-gray-400 text-sm md:text-base">
-                  123 Business Park, Suite 101
-                  <br />
-                  Techville, TX 75001
-                </span>
+              <li className="flex items-center justify-center md:justify-start">
+                <MapPin className="mr-3 mb-5 h-5 w-5 text-purple-500 flex-shrink-0" />
+                <Link
+                  to="https://www.google.com/maps/place/සෙත්+සේවන+හෙද+විද්%E2%80%8Dයලය+කුරුණෑගල+_+seth+sewana+nursing+school+kurunegala/@7.4804306,80.3670562,17z/data=!3m1!4b1!4m6!3m5!1s0x3ae3391721cf742f:0xe12fa333b13596b9!8m2!3d7.4804306!4d80.3696311!16s%2Fg%2F11rjrzc_f1?hl=en&entry=ttu&g_ep=EgoyMDI1MDYyNi4wIKXMDSoASAFQAw%3D%3D"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <div className="flex flex-col">
+                    <span className="text-gray-400 text-sm md:text-base">
+                      No.177/E, Kandy Road
+                    </span>
+                    <span className="text-gray-400 text-sm md:text-base">
+                      Kurunegala, Sri Lanka
+                    </span>
+                  </div>
+                </Link>
               </li>
               <li className="flex items-center justify-center md:justify-start">
-                <Phone className="mr-3 h-5 w-5 text-purple-500 flex-shrink-0" />
-                <span className="text-gray-400 text-sm md:text-base">
-                  +1 (555) 123-4567
-                </span>
+                <Phone className="mr-3 mb- h-5 w-5 text-purple-500 flex-shrink-0" />
+                <div className="flex flex-col">
+                  <span className="text-gray-400 text-sm md:text-base">
+                    <Link to="tel:+94725828283">+94 (72) 582 8283</Link>
+                  </span>
+                  <span className="text-gray-400 text-sm md:text-base">
+                    <Link to="tel:+94372202000">+94 (37) 220 2000</Link>
+                  </span>
+                </div>
               </li>
               <li className="flex items-center justify-center md:justify-start">
                 <Mail className="mr-3 h-5 w-5 text-purple-500 flex-shrink-0" />
                 <span className="text-gray-400 text-sm md:text-base">
-                  info@officeit.com
+                  <Link to="mailto:officeic.kc@gmail.com">
+                    officeic.kc@gmail.com
+                  </Link>
                 </span>
               </li>
             </ul>

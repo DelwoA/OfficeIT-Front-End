@@ -8,6 +8,7 @@ import MainLayout from "@/layouts/main.layout.jsx";
 
 import HomePage from "@/pages/home.page.jsx";
 import AboutPage from "@/pages/about.page.jsx";
+import ProductsPage from "@/pages/products.page.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")).render(
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/products" element={<ProductsPage />} />
           </Route>
         </Route>
       </Routes>
