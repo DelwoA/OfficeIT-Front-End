@@ -18,21 +18,21 @@ const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="container mx-auto px-4 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Column 1: Logo and Description */}
-          <div className="text-center md:text-left">
-            <Link to="/" className="inline-block mb-6">
+          <div className="lg:col-span-1">
+            <Link to="/" className="inline-block mb-4">
               <img
                 src="/logo.jpeg"
                 alt="Office IT Logo"
-                className="h-24 md:h-28 mx-auto md:mx-0 border-12 border-white rounded"
+                className="h-24 md:h-28 border-12 border-white rounded"
               />
             </Link>
-            <p className="text-gray-400 mb-6 text-sm md:text-base">
+            <p className="text-gray-400 mb-6 text-sm leading-relaxed">
               Your one-stop solution for all office and IT equipment needs. We
               provide high-quality products with exceptional service.
             </p>
-            <div className="flex justify-center md:justify-start space-x-4">
+            <div className="flex space-x-4">
               <Link
                 to="https://www.facebook.com/Officeitpvtltd"
                 target="_blank"
@@ -64,13 +64,13 @@ const Footer = () => {
           </div>
 
           {/* Column 2: Quick Links */}
-          <div className="text-center md:text-left">
+          <div className="lg:col-span-1">
             <h3 className="text-lg font-semibold mb-6">Quick Links</h3>
             <ul className="space-y-3">
               <li>
                 <Link
                   to="/"
-                  className="text-gray-400 hover:text-white transition-colors duration-200"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 text-sm"
                 >
                   Home
                 </Link>
@@ -78,7 +78,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/products"
-                  className="text-gray-400 hover:text-white transition-colors duration-200"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 text-sm"
                 >
                   Products
                 </Link>
@@ -86,7 +86,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/about"
-                  className="text-gray-400 hover:text-white transition-colors duration-200"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 text-sm"
                 >
                   About Us
                 </Link>
@@ -94,7 +94,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/contact"
-                  className="text-gray-400 hover:text-white transition-colors duration-200"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 text-sm"
                 >
                   Contact Us
                 </Link>
@@ -103,64 +103,73 @@ const Footer = () => {
           </div>
 
           {/* Column 3: Contact Us */}
-          <div className="text-center md:text-left">
+          <div className="lg:col-span-1">
             <h3 className="text-lg font-semibold mb-6">Contact Us</h3>
             <ul className="space-y-4">
-              <li className="flex items-center justify-center md:justify-start">
-                <MapPin className="mr-3 mb-5 h-5 w-5 text-purple-500 flex-shrink-0" />
+              <li className="flex items-start">
+                <MapPin className="mr-3 mt-1 h-4 w-4 text-purple-500 flex-shrink-0" />
                 <Link
                   to="https://www.google.com/maps/place/සෙත්+සේවන+හෙද+විද්%E2%80%8Dයලය+කුරුණෑගල+_+seth+sewana+nursing+school+kurunegala/@7.4804306,80.3670562,17z/data=!3m1!4b1!4m6!3m5!1s0x3ae3391721cf742f:0xe12fa333b13596b9!8m2!3d7.4804306!4d80.3696311!16s%2Fg%2F11rjrzc_f1?hl=en&entry=ttu&g_ep=EgoyMDI1MDYyNi4wIKXMDSoASAFQAw%3D%3D"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white transition-colors duration-200"
                 >
-                  <div className="flex flex-col">
-                    <span className="text-gray-400 text-sm md:text-base">
-                      No.177/E, Kandy Road
-                    </span>
-                    <span className="text-gray-400 text-sm md:text-base">
-                      Kurunegala, Sri Lanka
-                    </span>
+                  <div>
+                    <div className="text-sm">No.177/E, Kandy Road</div>
+                    <div className="text-sm">Kurunegala, Sri Lanka</div>
                   </div>
                 </Link>
               </li>
-              <li className="flex items-center justify-center md:justify-start">
-                <Phone className="mr-3 mb- h-5 w-5 text-purple-500 flex-shrink-0" />
-                <div className="flex flex-col">
-                  <span className="text-gray-400 text-sm md:text-base">
-                    <Link to="tel:+94725828283">+94 (72) 582 8283</Link>
-                  </span>
-                  <span className="text-gray-400 text-sm md:text-base">
-                    <Link to="tel:+94372202000">+94 (37) 220 2000</Link>
-                  </span>
+              <li className="flex items-start">
+                <Phone className="mr-3 mt-1 h-4 w-4 text-purple-500 flex-shrink-0" />
+                <div>
+                  <div className="text-gray-400 text-sm">
+                    <Link
+                      to="tel:+94725828283"
+                      className="hover:text-white transition-colors duration-200"
+                    >
+                      +94 (72) 582 8283
+                    </Link>
+                  </div>
+                  <div className="text-gray-400 text-sm">
+                    <Link
+                      to="tel:+94372202000"
+                      className="hover:text-white transition-colors duration-200"
+                    >
+                      +94 (37) 220 2000
+                    </Link>
+                  </div>
                 </div>
               </li>
-              <li className="flex items-center justify-center md:justify-start">
-                <Mail className="mr-3 h-5 w-5 text-purple-500 flex-shrink-0" />
-                <span className="text-gray-400 text-sm md:text-base">
-                  <Link to="mailto:officeic.kc@gmail.com">
+              <li className="flex items-start">
+                <Mail className="mr-3 mt-1 h-4 w-4 text-purple-500 flex-shrink-0" />
+                <div className="text-gray-400 text-sm">
+                  <Link
+                    to="mailto:officeic.kc@gmail.com"
+                    className="hover:text-white transition-colors duration-200"
+                  >
                     officeic.kc@gmail.com
                   </Link>
-                </span>
+                </div>
               </li>
             </ul>
           </div>
 
           {/* Column 4: Newsletter */}
-          <div className="text-center md:text-left">
-            <h3 className="text-lg font-semibold mb-6">Stay Updated</h3>
-            <p className="text-gray-400 mb-4 text-sm md:text-base">
-              Subscribe to our newsletter for the latest product updates, tech
-              news, and exclusive offers.
+          <div className="lg:col-span-1">
+            <h3 className="text-lg font-semibold mb-6">Newsletter</h3>
+            <p className="text-gray-400 mb-6 text-sm leading-relaxed">
+              Subscribe to our newsletter for special offers and updates.
             </p>
-            <form className="space-y-4">
+            <form className="space-y-3">
               <input
                 type="email"
-                placeholder="Your email address"
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm md:text-base"
+                placeholder="Your email"
+                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
               />
               <button
                 type="submit"
-                className="w-full px-4 py-2 bg-gradient-to-r from-purple-700 to-pink-500 text-white rounded-md hover:opacity-90 transition-opacity text-sm md:text-base font-medium"
+                className="w-full px-3 py-2 bg-gradient-to-r from-purple-700 to-pink-500 text-white rounded-md hover:opacity-90 transition-opacity text-sm font-medium"
               >
                 Subscribe
               </button>

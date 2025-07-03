@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, X, Search } from "lucide-react";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSearchClick = () => {
+    navigate("/products?focus=search");
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 shadow-sm">
@@ -18,7 +23,7 @@ const Navigation = () => {
               />
             </Link>
           </div>
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-9">
             <Link
               to="/"
               className="text-gray-800 hover:text-purple-700 font-medium"
@@ -38,12 +43,20 @@ const Navigation = () => {
               About
             </Link>
           </nav>
+          {/* TODO: Implement proper routing to contact page */}
           <div className="hidden md:flex items-center space-x-4">
+            <button
+              onClick={handleSearchClick}
+              className="p-2 text-gray-800 hover:text-purple-700 hover:bg-purple-50 rounded-md transition-colors duration-200"
+              title="Search products"
+            >
+              <Search className="h-5 w-5" />
+            </button>
             <Link
-              to="/products"
+              to="#"
               className="px-4 py-2 rounded-md bg-gradient-to-r from-purple-700 to-pink-500 text-white font-medium hover:opacity-90 transition-opacity"
             >
-              Browse Products
+              Contact Us
             </Link>
           </div>
           <div className="md:hidden">
@@ -96,8 +109,18 @@ const Navigation = () => {
           >
             About
           </Link>
+          <button
+            onClick={() => {
+              handleSearchClick();
+              setIsOpen(false);
+            }}
+            className="w-full text-left flex items-center gap-2 px-3 py-2 rounded-md text-gray-800 hover:bg-purple-50 transition-colors duration-200"
+          >
+            <Search className="h-4 w-4" />
+            Search Products
+          </button>
           <Link
-            to="/products"
+            to="/contact"
             className="block px-3 py-2 rounded-md bg-gradient-to-r from-purple-700 to-pink-500 text-white hover:opacity-90 transition-opacity duration-200"
             onClick={() => setIsOpen(false)}
           >

@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { Filter } from "lucide-react";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import { Filter, Search } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import FilterSidebar from "@/components/FilterSidebar";
 import { products } from "@/data/products";
@@ -11,11 +9,15 @@ const ProductsPage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const initialCategory = queryParams.get("category");
+  const shouldFocusSearch = queryParams.get("focus") === "search";
 
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [priceRange, setPriceRange] = useState([0, 2000]);
   const [availabilityFilter, setAvailabilityFilter] = useState([]);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const searchInputRef = useRef(null);
 
   const categories = Array.from(
     new Set(products.map((product) => product.category))
@@ -23,6 +25,14 @@ const ProductsPage = () => {
   const maxPrice = Math.max(...products.map((product) => product.price));
 
   const filteredProducts = products.filter((product) => {
+    // Filter by search query
+    if (
+      searchQuery &&
+      !product.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      !product.category.toLowerCase().includes(searchQuery.toLowerCase())
+    ) {
+      return false;
+    }
     // Filter by category
     if (selectedCategory && product.category !== selectedCategory) return false;
     // Filter by price
@@ -52,6 +62,13 @@ const ProductsPage = () => {
     setPriceRange([0, maxPrice]);
   }, [maxPrice]);
 
+  useEffect(() => {
+    // Auto-focus search input if coming from navigation search
+    if (shouldFocusSearch && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [shouldFocusSearch]);
+
   return (
     <div className="w-full">
       <div className="container mx-auto px-7 md:px-12 pt-9 pb-32">
@@ -73,7 +90,7 @@ const ProductsPage = () => {
 
           {/* Desktop Sidebar */}
           <div className="md:w-1/4 lg:w-1/5">
-            <div className="hidden md:block sticky top-20">
+            <div className="hidden md:block">
               <FilterSidebar
                 categories={categories}
                 selectedCategory={selectedCategory}
@@ -110,12 +127,40 @@ const ProductsPage = () => {
 
           {/* Product Grid */}
           <div className="md:w-3/4 lg:w-4/5">
+            {/* Search Bar */}
+            <div className="mb-6">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all duration-200 text-gray-900 placeholder-gray-500"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                  >
+                    <span className="text-lg">×</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
             {/* Results count */}
             <div className="mb-4 sm:mb-6">
               <p className="text-sm sm:text-base text-gray-600">
                 Showing {filteredProducts.length} of {products.length} products
                 {selectedCategory && (
                   <span className="ml-1">in "{selectedCategory}"</span>
+                )}
+                {searchQuery && (
+                  <span className="ml-1">for "{searchQuery}"</span>
                 )}
               </p>
             </div>
@@ -127,13 +172,16 @@ const ProductsPage = () => {
                     No products found
                   </h3>
                   <p className="text-gray-600 text-sm sm:text-base mb-6">
-                    Try adjusting your filters to find what you're looking for.
+                    Try adjusting your filters
+                    {searchQuery && " or search terms"} to find what you're
+                    looking for.
                   </p>
                   <button
                     onClick={() => {
                       setSelectedCategory(null);
                       setPriceRange([0, maxPrice]);
                       setAvailabilityFilter([]);
+                      setSearchQuery("");
                     }}
                     className="px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors font-medium"
                   >

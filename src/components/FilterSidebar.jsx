@@ -151,7 +151,7 @@ const FilterSidebar = ({
   // Desktop version
   if (!isMobileOpen) {
     return (
-      <div className="sticky top-6 bg-white p-6 rounded-lg shadow-sm border">
+      <div className="sticky top-4 bg-white p-6 rounded-lg shadow-sm border">
         {sidebarContent}
       </div>
     );
