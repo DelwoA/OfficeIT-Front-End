@@ -29,16 +29,7 @@ const AdminHeader = ({ onAddProduct }) => {
           Add Product
         </button>
       </div>
-      {/* TODO: Test */}
-      <Button variant="ghost" onClick={() => setIsOpen(!isOpen)}>
-        <ChevronDown
-          size={21}
-          className={`mr-2 transform transition-transform duration-300 ease-in-out ${
-            isOpen ? "rotate-180" : ""
-          }`}
-        />
-      </Button>
-      {/* Test close */}
+
       {/* Desktop Header */}
       <div className="hidden sm:flex justify-between items-center">
         <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
@@ -48,18 +39,11 @@ const AdminHeader = ({ onAddProduct }) => {
         <div className="flex items-center space-x-4">
           <button
             onClick={onAddProduct}
-            className="flex items-center px-4 py-2 bg-purple-700 text-white rounded-md hover:bg-purple-800 font-medium"
+            className="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 font-medium"
           >
             <Plus size={18} className="mr-2" />
             Add Product
           </button>
-          <Link
-            to="/admin-login"
-            className="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
-          >
-            <LogOut size={18} className="mr-2" />
-            Logout
-          </Link>
         </div>
       </div>
     </div>

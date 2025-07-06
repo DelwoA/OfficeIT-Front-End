@@ -3,8 +3,11 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router";
 
+import { ClerkProvider } from "@clerk/clerk-react";
+
 import RootLayout from "@/layouts/root.layout.jsx";
 import MainLayout from "@/layouts/main.layout.jsx";
+import ProtectedLayout from "@/layouts/protected.layout.jsx";
 
 import HomePage from "@/pages/home.page.jsx";
 import AboutPage from "@/pages/about.page.jsx";
@@ -12,22 +15,47 @@ import ProductsPage from "@/pages/products.page.jsx";
 import ProductDetailPage from "@/pages/product-detail.page.jsx";
 import AdminPage from "@/pages/admin.page.jsx";
 import AdminLoginPage from "@/pages/admin-login.page.jsx";
+import AdminSignupPage from "@/pages/admin-signup.page.jsx";
+
+// Initialize Clerk
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+// Check if PUBLISHABLE_KEY is defined
+if (!PUBLISHABLE_KEY) {
+  throw new Error("Missing Publishable Key");
+}
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route element={<RootLayout />}>
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/products/:id" element={<ProductDetailPage />} />
-            <Route path="/officeit-admin" element={<AdminPage />} />
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+      <BrowserRouter>
+        <Routes>
+          <Route element={<RootLayout />}>
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/products/:id" element={<ProductDetailPage />} />
+              <Route element={<ProtectedLayout />}>
+                <Route path="/officeit-admin" element={<AdminPage />} />
+              </Route>
+            </Route>
+            <Route path="/officeit-admin/login" element={<AdminLoginPage />} />
+            <Route
+              path="/officeit-admin/signup"
+              element={<AdminSignupPage />}
+            />
           </Route>
-          <Route path="/officeit-admin/login" element={<AdminLoginPage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </ClerkProvider>
   </StrictMode>
 );
+
+/* TODO:
+- Add toasts to confirm once login/signup is confirmed and when certain actinos are done.
+- Make sure the avatar gets displayed on the nav bar after logged in.
+- Check on admin roles on clerk
+- Add some welcome text in the admin dashboard page with the Name of the admin user.
+- Create some sort of proper contact us page for users to contact us.
+*/

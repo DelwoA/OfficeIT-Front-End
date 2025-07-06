@@ -1,9 +1,9 @@
-import { SignIn } from "@clerk/clerk-react";
+import { SignUp } from "@clerk/clerk-react";
 
-const AdminLoginPage = () => {
+const AdminSignupPage = () => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-50">
-      <SignIn
+      <SignUp
         appearance={{
           elements: {
             card: "flex flex-col items-center",
@@ -20,4 +20,4 @@ const AdminLoginPage = () => {
   );
 };
 
-export default AdminLoginPage;
+export default AdminSignupPage;
