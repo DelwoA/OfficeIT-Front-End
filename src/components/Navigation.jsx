@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-
+  const { user } = useUser();
   const handleSearchClick = () => {
     navigate("/products?focus=search");
   };
@@ -49,7 +49,13 @@ const Navigation = () => {
           <div className="hidden md:flex items-center space-x-4">
             <UserButton />
             <SignedIn>
-              <Button asChild variant="ghost" className="text-base">
+              <Button
+                asChild
+                variant="ghost"
+                className={`text-base ${
+                  user?.publicMetadata?.role === "admin" ? "" : "hidden"
+                }`}
+              >
                 <Link
                   to="/officeit-admin"
                   className="text-gray-800 hover:text-purple-700 hover:bg-purple-50 font-medium"
@@ -66,7 +72,7 @@ const Navigation = () => {
               <Search className="h-5 w-5" />
             </button>
             <Link
-              to="#"
+              to="/contact"
               className="px-4 py-2 rounded-md bg-gradient-to-r from-purple-700 to-pink-500 text-white font-medium hover:opacity-90 transition-opacity"
             >
               Contact Us
@@ -136,7 +142,9 @@ const Navigation = () => {
           <SignedIn>
             <Link
               to="/officeit-admin"
-              className="block px-3 py-2 rounded-md text-gray-800 hover:bg-purple-50 transition-colors duration-200 font-semibold"
+              className={`block px-3 py-2 rounded-md text-gray-800 hover:bg-purple-50 transition-colors duration-200 font-semibold ${
+                user?.publicMetadata?.role === "admin" ? "" : "hidden"
+              }`}
               onClick={() => setIsOpen(false)}
             >
               Admin Dashboard

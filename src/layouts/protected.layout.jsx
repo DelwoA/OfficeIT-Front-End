@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const ProtectedLayout = () => {
-  const { isSignedIn, isLoaded } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser();
 
   if (!isLoaded) {
     return <LoadingSpinner message="Authenticating..." />;
@@ -11,6 +11,10 @@ const ProtectedLayout = () => {
 
   if (!isSignedIn) {
     return <Navigate to="/officeit-admin/login" />;
+  }
+
+  if (user?.publicMetadata?.role !== "admin") {
+    return <Navigate to="/" />;
   }
 
   return <Outlet />;

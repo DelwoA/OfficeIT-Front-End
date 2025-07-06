@@ -11,6 +11,7 @@ import ProtectedLayout from "@/layouts/protected.layout.jsx";
 
 import HomePage from "@/pages/home.page.jsx";
 import AboutPage from "@/pages/about.page.jsx";
+import ContactPage from "@/pages/contact.page.jsx";
 import ProductsPage from "@/pages/products.page.jsx";
 import ProductDetailPage from "@/pages/product-detail.page.jsx";
 import AdminPage from "@/pages/admin.page.jsx";
@@ -34,6 +35,7 @@ createRoot(document.getElementById("root")).render(
             <Route element={<MainLayout />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/products/:id" element={<ProductDetailPage />} />
               <Route element={<ProtectedLayout />}>
@@ -54,8 +56,9 @@ createRoot(document.getElementById("root")).render(
 
 /* TODO:
 - Add toasts to confirm once login/signup is confirmed and when certain actinos are done.
-- Make sure the avatar gets displayed on the nav bar after logged in.
-- Check on admin roles on clerk
+- Check on admin roles on clerk (backend).
 - Add some welcome text in the admin dashboard page with the Name of the admin user.
 - Create some sort of proper contact us page for users to contact us.
+- Create a page not found if the user tries to access a page that doesn't exist inside the app domain.
+- During an error, show a an error occured page.
 */

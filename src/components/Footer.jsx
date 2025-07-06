@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Mail, Phone, MapPin } from "lucide-react";
 
 // Custom WhatsApp icon component to match Lucide React styling
 const WhatsAppIcon = ({ size = 20, className = "" }) => (
@@ -41,15 +41,6 @@ const Footer = () => {
                 aria-label="Facebook"
               >
                 <Facebook size={20} />
-              </Link>
-              <Link
-                to="https://www.instagram.com/officeitpvtltd/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors duration-200"
-                aria-label="Instagram"
-              >
-                <Instagram size={20} />
               </Link>
               <Link
                 to="https://wa.me/94725828283"
