@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AdminHeader from "@/components/AdminHeader";
 import ProductTable from "@/components/ProductTable";
 import AddProductModal from "@/components/AddProductModal";
+import CategoryManagementModal from "@/components/CategoryManagementModal";
 import { products } from "@/data/products";
 import { SignedIn } from "@clerk/clerk-react";
 
@@ -10,6 +11,16 @@ const AdminPage = () => {
   const [sortField, setSortField] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc"); // 'asc' or 'desc'
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+
+  // Add a separate categories state to manage all available categories
+  const [availableCategories, setAvailableCategories] = useState(() => {
+    // Initialize with categories from existing products
+    const existingCategories = [
+      ...new Set(products.map((product) => product.category)),
+    ];
+    return existingCategories;
+  });
 
   const handleDeleteProduct = (id) => {
     setProductList(productList.filter((product) => product.id !== id));
@@ -19,13 +30,42 @@ const AdminPage = () => {
     setIsAddModalOpen(true);
   };
 
+  const handleEditCategories = () => {
+    setIsCategoryModalOpen(true);
+  };
+
   const handleModalClose = () => {
     setIsAddModalOpen(false);
   };
 
+  const handleCategoryModalClose = () => {
+    setIsCategoryModalOpen(false);
+  };
+
   const handleAddNewProduct = (newProduct) => {
     setProductList((prev) => [...prev, newProduct]);
+
+    // Also add the category to available categories if it's not already there
+    if (!availableCategories.includes(newProduct.category)) {
+      setAvailableCategories((prev) => [...prev, newProduct.category]);
+    }
+
     // Show success message or toast here if needed
+  };
+
+  const handleUpdateCategories = (updatedCategories) => {
+    // Update the available categories state with the new categories
+    const categoryNames = updatedCategories.map((cat) => cat.name);
+    setAvailableCategories(categoryNames);
+
+    // If a category was renamed, update all products with that category
+    // This is a placeholder - in a real app, you'd handle this more robustly
+    const oldCategories = [...new Set(productList.map((p) => p.category))];
+    const newCategoryNames = updatedCategories.map((c) => c.name);
+
+    // For now, we'll just log the change
+    // In a real implementation, you'd update products when categories are renamed
+    console.log("Categories updated:", updatedCategories);
   };
 
   const handleSort = (field) => {
@@ -88,7 +128,10 @@ const AdminPage = () => {
   return (
     <SignedIn>
       <div className="min-h-screen bg-gray-50">
-        <AdminHeader onAddProduct={handleAddProduct} />
+        <AdminHeader
+          onAddProduct={handleAddProduct}
+          onEditCategories={handleEditCategories}
+        />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:pt-8 pb-28">
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
@@ -240,6 +283,16 @@ const AdminPage = () => {
           isOpen={isAddModalOpen}
           onClose={handleModalClose}
           onAddProduct={handleAddNewProduct}
+          products={productList}
+          availableCategories={availableCategories}
+        />
+
+        {/* Category Management Modal */}
+        <CategoryManagementModal
+          isOpen={isCategoryModalOpen}
+          onClose={handleCategoryModalClose}
+          products={productList}
+          onUpdateCategories={handleUpdateCategories}
         />
       </div>
     </SignedIn>

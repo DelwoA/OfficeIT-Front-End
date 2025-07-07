@@ -28,7 +28,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const AddProductModal = ({ isOpen, onClose, onAddProduct }) => {
+const AddProductModal = ({
+  isOpen,
+  onClose,
+  onAddProduct,
+  products,
+  availableCategories,
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -44,13 +50,12 @@ const AddProductModal = ({ isOpen, onClose, onAddProduct }) => {
 
   const [errors, setErrors] = useState({});
 
-  const categories = [
-    "Computers",
-    "Printers",
-    "Networking",
-    "Software",
-    "Accessories",
-  ];
+  // Use availableCategories prop if provided, otherwise fallback to extracting from products
+  const categories =
+    availableCategories ||
+    (products
+      ? [...new Set(products.map((product) => product.category))]
+      : ["Computers", "Printers", "Networking", "Software", "Accessories"]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
