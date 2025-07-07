@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import AdminHeader from "@/components/AdminHeader";
 import ProductTable from "@/components/ProductTable";
+import AddProductModal from "@/components/AddProductModal";
 import { products } from "@/data/products";
 import { SignedIn } from "@clerk/clerk-react";
 
@@ -8,14 +9,23 @@ const AdminPage = () => {
   const [productList, setProductList] = useState(products);
   const [sortField, setSortField] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc"); // 'asc' or 'desc'
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const handleDeleteProduct = (id) => {
     setProductList(productList.filter((product) => product.id !== id));
   };
 
   const handleAddProduct = () => {
-    // TODO: Implement add product modal/form
-    alert("Add product functionality will be implemented here");
+    setIsAddModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsAddModalOpen(false);
+  };
+
+  const handleAddNewProduct = (newProduct) => {
+    setProductList((prev) => [...prev, newProduct]);
+    // Show success message or toast here if needed
   };
 
   const handleSort = (field) => {
@@ -224,6 +234,13 @@ const AdminPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Add Product Modal */}
+        <AddProductModal
+          isOpen={isAddModalOpen}
+          onClose={handleModalClose}
+          onAddProduct={handleAddNewProduct}
+        />
       </div>
     </SignedIn>
   );
