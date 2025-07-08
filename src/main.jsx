@@ -17,6 +17,7 @@ import ProductDetailPage from "@/pages/product-detail.page.jsx";
 import AdminPage from "@/pages/admin.page.jsx";
 import AdminLoginPage from "@/pages/admin-login.page.jsx";
 import AdminSignupPage from "@/pages/admin-signup.page.jsx";
+import NotFoundPage from "@/pages/404.page.jsx";
 
 // Initialize Clerk
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -47,6 +48,8 @@ createRoot(document.getElementById("root")).render(
               path="/officeit-admin/signup"
               element={<AdminSignupPage />}
             />
+            {/* 404 Page - Catch all unmatched routes */}
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
@@ -55,10 +58,6 @@ createRoot(document.getElementById("root")).render(
 );
 
 /* TODO:
-- Add toasts to confirm once login/signup is confirmed and when certain actinos are done.
 - Check on admin roles on clerk (backend).
-- Add some welcome text in the admin dashboard page with the Name of the admin user.
-- Create some sort of proper contact us page for users to contact us.
-- Create a page not found if the user tries to access a page that doesn't exist inside the app domain.
-- During an error, show a an error occured page.
+- Implement product image bucket.
 */
