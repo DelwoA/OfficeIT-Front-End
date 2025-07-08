@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AdminHeader from "@/components/AdminHeader";
 import ProductTable from "@/components/ProductTable";
 import AddProductModal from "@/components/AddProductModal";
+import EditProductModal from "@/components/EditProductModal";
 import CategoryManagementModal from "@/components/CategoryManagementModal";
 import { products } from "@/data/products";
 import { SignedIn } from "@clerk/clerk-react";
@@ -11,6 +12,8 @@ const AdminPage = () => {
   const [sortField, setSortField] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc"); // 'asc' or 'desc'
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
   // Add a separate categories state to manage all available categories
@@ -30,12 +33,22 @@ const AdminPage = () => {
     setIsAddModalOpen(true);
   };
 
+  const handleEditProduct = (product) => {
+    setSelectedProduct(product);
+    setIsEditModalOpen(true);
+  };
+
   const handleEditCategories = () => {
     setIsCategoryModalOpen(true);
   };
 
   const handleModalClose = () => {
     setIsAddModalOpen(false);
+  };
+
+  const handleEditModalClose = () => {
+    setIsEditModalOpen(false);
+    setSelectedProduct(null);
   };
 
   const handleCategoryModalClose = () => {
@@ -48,6 +61,21 @@ const AdminPage = () => {
     // Also add the category to available categories if it's not already there
     if (!availableCategories.includes(newProduct.category)) {
       setAvailableCategories((prev) => [...prev, newProduct.category]);
+    }
+
+    // Show success message or toast here if needed
+  };
+
+  const handleEditProductSave = (updatedProduct) => {
+    setProductList((prev) =>
+      prev.map((product) =>
+        product.id === updatedProduct.id ? updatedProduct : product
+      )
+    );
+
+    // Also add the category to available categories if it's not already there
+    if (!availableCategories.includes(updatedProduct.category)) {
+      setAvailableCategories((prev) => [...prev, updatedProduct.category]);
     }
 
     // Show success message or toast here if needed
@@ -269,6 +297,7 @@ const AdminPage = () => {
                 <ProductTable
                   products={productList}
                   onDeleteProduct={handleDeleteProduct}
+                  onEditProduct={handleEditProduct}
                   onSort={handleSort}
                   sortField={sortField}
                   sortDirection={sortDirection}
@@ -284,6 +313,15 @@ const AdminPage = () => {
           onClose={handleModalClose}
           onAddProduct={handleAddNewProduct}
           products={productList}
+          availableCategories={availableCategories}
+        />
+
+        {/* Edit Product Modal */}
+        <EditProductModal
+          isOpen={isEditModalOpen}
+          onClose={handleEditModalClose}
+          onEditProduct={handleEditProductSave}
+          product={selectedProduct}
           availableCategories={availableCategories}
         />
 

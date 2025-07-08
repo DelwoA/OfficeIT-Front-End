@@ -392,10 +392,13 @@ const CategoryManagementModal = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="flex justify-end pt-6 border-t border-gray-200">
+        <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+          <Button onClick={handleClose} variant="outline" className="px-6 py-2">
+            Cancel
+          </Button>
           <Button
             onClick={handleClose}
-            className="px-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+            className="px-8 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
           >
             Done
           </Button>

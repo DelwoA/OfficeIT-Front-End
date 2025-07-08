@@ -21,7 +21,7 @@ const ProductCategoriesSection = () => {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
           <Link
-            to="/products?category=computers"
+            to="/products?category=Computers"
             className="group relative overflow-hidden rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -38,7 +38,7 @@ const ProductCategoriesSection = () => {
             </div>
           </Link>
           <Link
-            to="/products?category=printers"
+            to="/products?category=Printers"
             className="group relative overflow-hidden rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -55,7 +55,7 @@ const ProductCategoriesSection = () => {
             </div>
           </Link>
           <Link
-            to="/products?category=networking"
+            to="/products?category=Networking"
             className="group relative overflow-hidden rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -72,7 +72,7 @@ const ProductCategoriesSection = () => {
             </div>
           </Link>
           <Link
-            to="/products?category=software"
+            to="/products?category=Software"
             className="group relative overflow-hidden rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -89,7 +89,7 @@ const ProductCategoriesSection = () => {
             </div>
           </Link>
           <Link
-            to="/products?category=accessories"
+            to="/products?category=Accessories"
             className="group relative overflow-hidden rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 col-span-2 sm:col-span-1"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>

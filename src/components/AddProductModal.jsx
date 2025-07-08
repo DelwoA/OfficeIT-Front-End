@@ -475,7 +475,7 @@ const AddProductModal = ({
               type="submit"
               className="px-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
             >
-              <Package className="w-4 h-4 mr-2" />
+              <Package className="w-4 h-4" />
               Add Product
             </Button>
           </div>

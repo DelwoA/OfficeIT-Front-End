@@ -4,6 +4,7 @@ import DeleteConfirmation from "@/components/DeleteConfirmation";
 const ProductTable = ({
   products,
   onDeleteProduct,
+  onEditProduct,
   onSort,
   sortField,
   sortDirection,
@@ -108,7 +109,10 @@ const ProductTable = ({
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button className="text-blue-600 hover:text-blue-900 mr-4 p-1 hover:bg-blue-50 rounded">
+                  <button
+                    onClick={() => onEditProduct(product)}
+                    className="text-blue-600 hover:text-blue-900 mr-4 p-1 hover:bg-blue-50 rounded transition-colors"
+                  >
                     <Edit size={18} />
                   </button>
                   <DeleteConfirmation
@@ -146,7 +150,10 @@ const ProductTable = ({
                     <p className="text-sm text-gray-500">{product.category}</p>
                   </div>
                   <div className="flex space-x-2 ml-2">
-                    <button className="text-blue-600 hover:text-blue-900 p-1 hover:bg-blue-50 rounded">
+                    <button
+                      onClick={() => onEditProduct(product)}
+                      className="text-blue-600 hover:text-blue-900 p-1 hover:bg-blue-50 rounded transition-colors"
+                    >
                       <Edit size={16} />
                     </button>
                     <DeleteConfirmation

@@ -9,6 +9,7 @@ import {
   Facebook,
   MessageCircle,
 } from "lucide-react";
+import { toast } from "sonner";
 
 // Custom WhatsApp icon component to match Lucide React styling
 const WhatsAppIcon = ({ size = 20, className = "" }) => (
@@ -32,27 +33,181 @@ const ContactPage = () => {
     message: "",
   });
 
+  const [errors, setErrors] = useState({});
+
+  // Validation functions
+  const validateEmail = (email) => {
+    // Check total length
+    if (email.length > 254) return false;
+
+    // Check for exactly one "@" symbol
+    const atCount = (email.match(/@/g) || []).length;
+    if (atCount !== 1) return false;
+
+    const [localPart, domainPart] = email.split("@");
+
+    // Check if both parts exist and are not empty
+    if (!localPart || !domainPart) return false;
+
+    // Check local part length
+    if (localPart.length > 64) return false;
+
+    // Check domain part length
+    if (domainPart.length > 255) return false;
+
+    // Validate local part
+    const localPartRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+$/;
+    if (!localPartRegex.test(localPart)) return false;
+
+    // Check for consecutive dots or dots at beginning/end in local part
+    if (
+      localPart.includes("..") ||
+      localPart.startsWith(".") ||
+      localPart.endsWith(".")
+    ) {
+      return false;
+    }
+
+    // Validate domain part
+    // Must have at least one dot
+    if (!domainPart.includes(".")) return false;
+
+    // Split domain into segments
+    const domainSegments = domainPart.split(".");
+
+    // Each segment must be valid
+    for (const segment of domainSegments) {
+      if (!segment) return false; // Empty segment
+      if (segment.startsWith("-") || segment.endsWith("-")) return false; // Hyphen at start/end
+      if (!/^[a-zA-Z0-9-]+$/.test(segment)) return false; // Invalid characters
+    }
+
+    return true;
+  };
+
+  const validatePhone = (phone) => {
+    // Remove all non-digit characters
+    const cleanPhone = phone.replace(/\D/g, "");
+
+    // Check if it's exactly 10 digits
+    return cleanPhone.length === 10;
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Name validation
+    if (!formData.name.trim()) {
+      newErrors.name = "Full name is required";
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
+    }
+
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = "Email address is required";
+    } else if (!validateEmail(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    // Phone validation (optional but if provided must be valid)
+    if (formData.phone.trim() && !validatePhone(formData.phone)) {
+      newErrors.phone = "Please enter a valid 10-digit phone number";
+    }
+
+    // Subject validation
+    if (!formData.subject.trim()) {
+      newErrors.subject = "Subject is required";
+    } else if (formData.subject.trim().length < 3) {
+      newErrors.subject = "Subject must be at least 3 characters";
+    }
+
+    // Message validation
+    if (!formData.message.trim()) {
+      newErrors.message = "Message is required";
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = "Message must be at least 10 characters";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted:", formData);
-    // For now, just show an alert
-    alert("Thank you for your message! We will get back to you soon.");
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: "",
+
+    // Validate form before submission
+    if (!validateForm()) {
+      return;
+    }
+
+    // Show loading toast immediately
+    const loadingToastId = toast.loading("Sending your message...", {
+      description: "Please wait while we process your request.",
     });
+
+    try {
+      // Simulate processing time (replace with actual API call)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // Handle form submission here
+      console.log("Form submitted:", formData);
+
+      // Simulate form submission result (replace with actual API call)
+      const isSuccess = Math.random() > 0.2; // 80% success rate for demo
+
+      if (isSuccess) {
+        // Update loading toast to success
+        toast.success("Message sent successfully!", {
+          id: loadingToastId,
+          description:
+            "Thank you for contacting us. We'll get back to you soon.",
+          duration: 4000,
+        });
+
+        // Reset form on success
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: "",
+        });
+        setErrors({});
+      } else {
+        // Update loading toast to error
+        toast.error("Failed to send message", {
+          id: loadingToastId,
+          description:
+            "Your message couldn't be delivered. Please try again or contact us directly at officeic.kc@gmail.com",
+          duration: 6000,
+        });
+      }
+    } catch (error) {
+      // Handle any unexpected errors
+      toast.error("Something went wrong", {
+        id: loadingToastId,
+        description:
+          "An unexpected error occurred. Please check your connection and try again.",
+        duration: 6000,
+      });
+    }
   };
 
   return (
@@ -172,7 +327,7 @@ const ContactPage = () => {
                 below and we'll get back to you as soon as possible.
               </p>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} noValidate className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label
@@ -187,10 +342,14 @@ const ContactPage = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200"
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200 ${
+                        errors.name ? "border-red-500" : "border-gray-300"
+                      }`}
                       placeholder="Your full name"
                     />
+                    {errors.name && (
+                      <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                    )}
                   </div>
                   <div>
                     <label
@@ -205,10 +364,16 @@ const ContactPage = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200"
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200 ${
+                        errors.email ? "border-red-500" : "border-gray-300"
+                      }`}
                       placeholder="your@email.com"
                     />
+                    {errors.email && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.email}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -226,9 +391,16 @@ const ContactPage = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200"
-                      placeholder="+94 xx xxx xxxx"
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200 ${
+                        errors.phone ? "border-red-500" : "border-gray-300"
+                      }`}
+                      placeholder="10-digit phone number"
                     />
+                    {errors.phone && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.phone}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label
@@ -243,10 +415,16 @@ const ContactPage = () => {
                       name="subject"
                       value={formData.subject}
                       onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200"
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200 ${
+                        errors.subject ? "border-red-500" : "border-gray-300"
+                      }`}
                       placeholder="How can we help?"
                     />
+                    {errors.subject && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.subject}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -262,11 +440,17 @@ const ContactPage = () => {
                     name="message"
                     value={formData.message}
                     onChange={handleInputChange}
-                    required
                     rows={6}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200 resize-none"
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200 resize-none ${
+                      errors.message ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="Tell us more about your requirements..."
                   />
+                  {errors.message && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.message}
+                    </p>
+                  )}
                 </div>
 
                 <button
