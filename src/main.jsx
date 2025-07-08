@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router";
+import ScrollToTop from "@/components/scroll-to-top.jsx";
 
 import { ClerkProvider } from "@clerk/clerk-react";
 
@@ -31,6 +32,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route element={<RootLayout />}>
             <Route element={<MainLayout />}>
