@@ -11,6 +11,7 @@ export const products = [
     description:
       "Ultra-lightweight business laptop with powerful performance and long battery life.",
     availability: "In Stock",
+    featured: true,
     specs: {
       processor: "Intel Core i7-1165G7",
       memory: "16GB DDR4",
@@ -30,6 +31,7 @@ export const products = [
     description:
       "Professional color laser printer perfect for small to medium businesses.",
     availability: "In Stock",
+    featured: true,
     specs: {
       type: "Color Laser",
       printSpeed: "22 ppm",
@@ -48,6 +50,7 @@ export const products = [
       "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     description: "Cloud-managed network switch with 8 gigabit ethernet ports.",
     availability: "In Stock",
+    featured: true,
     specs: {
       ports: "8x Gigabit Ethernet",
       powerConsumption: "20W max",
@@ -67,6 +70,7 @@ export const products = [
     description:
       "Complete office suite with Word, Excel, PowerPoint, Outlook and more.",
     availability: "In Stock",
+    featured: true,
     specs: {
       subscription: "Monthly",
       users: "1 user",
@@ -86,6 +90,7 @@ export const products = [
     description:
       "Professional 4K monitor with USB-C connectivity and excellent color accuracy.",
     availability: "In Stock",
+    featured: false,
     specs: {
       size: "27 inch",
       resolution: "3840 x 2160 (4K)",
@@ -105,6 +110,7 @@ export const products = [
     description:
       "Powerful MacBook Pro with M1 Pro chip for professional creative work.",
     availability: "In Stock",
+    featured: false,
     specs: {
       processor: "Apple M1 Pro",
       memory: "16GB Unified Memory",
@@ -124,6 +130,7 @@ export const products = [
     description:
       "Advanced wireless mouse with customizable buttons and precision tracking.",
     availability: "In Stock",
+    featured: false,
     specs: {
       connectivity: "Bluetooth, USB Receiver",
       buttons: "7 programmable buttons",
@@ -143,6 +150,7 @@ export const products = [
     description:
       "High-performance WiFi 6 router for ultra-fast wireless connectivity.",
     availability: "Out of Stock",
+    featured: false,
     specs: {
       wifiStandard: "WiFi 6 (802.11ax)",
       speed: "Up to 6Gbps",
@@ -162,6 +170,7 @@ export const products = [
     description:
       "All-in-one wireless laser printer with duplex printing, scanning, and copying capabilities.",
     availability: "In Stock",
+    featured: false,
     specs: {
       type: "Monochrome Laser",
       printSpeed: "40 ppm",
@@ -181,6 +190,7 @@ export const products = [
     description:
       "High-performance 4K gaming monitor with 144Hz refresh rate and HDR10 support.",
     availability: "In Stock",
+    featured: false,
     specs: {
       size: "32 inch",
       resolution: "3840 x 2160 (4K)",
@@ -191,5 +201,38 @@ export const products = [
   },
 ];
 
-// Featured products (first 4 products for the homepage)
-export const featuredProducts = products.slice(0, 4);
+// Function to get products from localStorage or fallback to static data
+export const getProducts = () => {
+  if (typeof window !== "undefined") {
+    const storedProducts = localStorage.getItem("officeit-products");
+    if (storedProducts) {
+      try {
+        const parsedProducts = JSON.parse(storedProducts);
+        // Validate that it's an array and has the expected structure
+        if (Array.isArray(parsedProducts) && parsedProducts.length > 0) {
+          return parsedProducts;
+        }
+      } catch (error) {
+        console.error("Error parsing stored products:", error);
+        // Clear corrupted data
+        localStorage.removeItem("officeit-products");
+      }
+    }
+  }
+  return products;
+};
+
+// Function to save products to localStorage
+export const saveProducts = (productList) => {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("officeit-products", JSON.stringify(productList));
+  }
+};
+
+// Get dynamically featured products for the homepage
+export const getFeaturedProducts = (productList = getProducts()) => {
+  return productList.filter((product) => product.featured);
+};
+
+// Featured products (filtered by featured flag)
+export const featuredProducts = getFeaturedProducts();

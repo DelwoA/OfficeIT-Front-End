@@ -62,4 +62,6 @@ createRoot(document.getElementById("root")).render(
 /* TODO:
 - Check on admin roles on clerk (backend).
 - Implement product image bucket.
+- Remove the one of the 2 add products buttons available in the mobile view.
+- Double check all the mobile view UI.
 */

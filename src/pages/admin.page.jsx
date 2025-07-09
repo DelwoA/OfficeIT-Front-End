@@ -4,11 +4,12 @@ import ProductTable from "@/components/ProductTable";
 import AddProductModal from "@/components/AddProductModal";
 import EditProductModal from "@/components/EditProductModal";
 import CategoryManagementModal from "@/components/CategoryManagementModal";
-import { products } from "@/data/products";
+import FeaturedProductsInfoModal from "@/components/FeaturedProductsInfoModal";
+import { products, saveProducts, getProducts } from "@/data/products";
 import { SignedIn } from "@clerk/clerk-react";
 
 const AdminPage = () => {
-  const [productList, setProductList] = useState(products);
+  const [productList, setProductList] = useState(getProducts);
   const [sortField, setSortField] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc"); // 'asc' or 'desc'
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -18,15 +19,18 @@ const AdminPage = () => {
 
   // Add a separate categories state to manage all available categories
   const [availableCategories, setAvailableCategories] = useState(() => {
-    // Initialize with categories from existing products
+    // Initialize with categories from current products (including localStorage)
+    const currentProducts = getProducts();
     const existingCategories = [
-      ...new Set(products.map((product) => product.category)),
+      ...new Set(currentProducts.map((product) => product.category)),
     ];
     return existingCategories;
   });
 
   const handleDeleteProduct = (id) => {
-    setProductList(productList.filter((product) => product.id !== id));
+    const updatedList = productList.filter((product) => product.id !== id);
+    setProductList(updatedList);
+    saveProducts(updatedList);
   };
 
   const handleAddProduct = () => {
@@ -56,7 +60,11 @@ const AdminPage = () => {
   };
 
   const handleAddNewProduct = (newProduct) => {
-    setProductList((prev) => [...prev, newProduct]);
+    setProductList((prev) => {
+      const updatedList = [...prev, newProduct];
+      saveProducts(updatedList);
+      return updatedList;
+    });
 
     // Also add the category to available categories if it's not already there
     if (!availableCategories.includes(newProduct.category)) {
@@ -67,11 +75,13 @@ const AdminPage = () => {
   };
 
   const handleEditProductSave = (updatedProduct) => {
-    setProductList((prev) =>
-      prev.map((product) =>
+    setProductList((prev) => {
+      const updatedList = prev.map((product) =>
         product.id === updatedProduct.id ? updatedProduct : product
-      )
-    );
+      );
+      saveProducts(updatedList);
+      return updatedList;
+    });
 
     // Also add the category to available categories if it's not already there
     if (!availableCategories.includes(updatedProduct.category)) {
@@ -94,6 +104,19 @@ const AdminPage = () => {
     // For now, we'll just log the change
     // In a real implementation, you'd update products when categories are renamed
     console.log("Categories updated:", updatedCategories);
+  };
+
+  const handleToggleFeatured = (productId) => {
+    setProductList((prev) => {
+      const updatedList = prev.map((product) =>
+        product.id === productId
+          ? { ...product, featured: !product.featured }
+          : product
+      );
+      // Save to localStorage whenever featured status changes
+      saveProducts(updatedList);
+      return updatedList;
+    });
   };
 
   const handleSort = (field) => {
@@ -162,7 +185,7 @@ const AdminPage = () => {
         />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:pt-8 pb-28">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6 mb-6 lg:mb-8">
             <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
@@ -242,15 +265,35 @@ const AdminPage = () => {
                 </div>
               </div>
             </div>
+            <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-yellow-100 rounded-md flex items-center justify-center">
+                    <span className="text-yellow-600 font-semibold text-sm">
+                      ★
+                    </span>
+                  </div>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-500">Featured</p>
+                  <p className="text-2xl font-semibold text-gray-900">
+                    {productList.filter((p) => p.featured).length}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
           {/* Product Management Section */}
           <div className="bg-white rounded-lg shadow-sm overflow-hidden">
             <div className="p-4 sm:p-6 border-b border-gray-200">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1">
-                    Product Management
-                  </h2>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+                      Product Management
+                    </h2>
+                    <FeaturedProductsInfoModal />
+                  </div>
                   <p className="text-sm text-gray-500">
                     Manage your product inventory and details
                   </p>
@@ -301,6 +344,7 @@ const AdminPage = () => {
                   onSort={handleSort}
                   sortField={sortField}
                   sortDirection={sortDirection}
+                  onToggleFeatured={handleToggleFeatured}
                 />
               )}
             </div>

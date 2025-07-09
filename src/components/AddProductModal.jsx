@@ -159,6 +159,7 @@ const AddProductModal = ({
       id: Date.now().toString(),
       price: parseFloat(formData.price),
       discount: formData.discount ? parseFloat(formData.discount) : 0,
+      featured: false, // New products are not featured by default
     };
 
     onAddProduct(newProduct);

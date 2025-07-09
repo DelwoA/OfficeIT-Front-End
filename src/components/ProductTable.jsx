@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Edit, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { Edit, Trash2, ChevronDown, ChevronUp, Star } from "lucide-react";
 import DeleteConfirmation from "@/components/DeleteConfirmation";
+import { toast } from "sonner";
 
 const ProductTable = ({
   products,
@@ -9,8 +10,29 @@ const ProductTable = ({
   onSort,
   sortField,
   sortDirection,
+  onToggleFeatured,
 }) => {
   const [expandedProductId, setExpandedProductId] = useState(null);
+
+  const handleFeaturedToggle = (productId, currentFeaturedState) => {
+    const featuredCount = products.filter((p) => p.featured).length;
+
+    if (!currentFeaturedState) {
+      // Trying to feature a product
+      if (featuredCount >= 5) {
+        toast.error("Maximum of 5 products can be featured at a time");
+        return;
+      }
+    }
+
+    onToggleFeatured(productId);
+
+    if (!currentFeaturedState) {
+      toast.success("Product added to featured section");
+    } else {
+      toast.success("Product removed from featured section");
+    }
+  };
 
   const handleRowClick = (productId) => {
     if (expandedProductId === productId) {
@@ -51,7 +73,7 @@ const ProductTable = ({
 
   const ExpandedProductDetails = ({ product }) => (
     <tr className="bg-gray-50">
-      <td colSpan="5" className="px-6 py-6">
+      <td colSpan="6" className="px-6 py-6">
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Product Image and Basic Info */}
@@ -177,6 +199,12 @@ const ProductTable = ({
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
+                Featured
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
                 Actions
               </th>
             </tr>
@@ -257,6 +285,30 @@ const ProductTable = ({
                       {product.availability}
                     </span>
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={product.featured}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            handleFeaturedToggle(product.id, product.featured);
+                          }}
+                          className="sr-only peer"
+                        />
+                        <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                        <Star
+                          size={16}
+                          className={`ml-2 transition-colors ${
+                            product.featured
+                              ? "text-yellow-500 fill-yellow-500"
+                              : "text-gray-400"
+                          }`}
+                        />
+                      </label>
+                    </div>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
                       onClick={(e) => {
@@ -333,7 +385,30 @@ const ProductTable = ({
                         {product.category}
                       </p>
                     </div>
-                    <div className="flex space-x-2 ml-2">
+                    <div className="flex space-x-2 ml-2 items-center">
+                      <label
+                        className="relative inline-flex items-center cursor-pointer"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={product.featured}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            handleFeaturedToggle(product.id, product.featured);
+                          }}
+                          className="sr-only peer"
+                        />
+                        <div className="relative w-8 h-4 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-purple-600"></div>
+                        <Star
+                          size={12}
+                          className={`ml-1 transition-colors ${
+                            product.featured
+                              ? "text-yellow-500 fill-yellow-500"
+                              : "text-gray-400"
+                          }`}
+                        />
+                      </label>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
