@@ -64,4 +64,5 @@ createRoot(document.getElementById("root")).render(
 - Implement product image bucket.
 - Remove the one of the 2 add products buttons available in the mobile view.
 - Double check all the mobile view UI.
+- Remember to add the product logo to the favicon.
 */

@@ -417,7 +417,7 @@ const AddProductModal = ({
                       onChange={(e) =>
                         handleSpecChange(index, "key", e.target.value)
                       }
-                      placeholder="e.g., Processor, Memory, Storage"
+                      placeholder="e.g., Memory, Storage, Model, Battery, Resolution"
                       className="mt-1"
                     />
                   </div>
