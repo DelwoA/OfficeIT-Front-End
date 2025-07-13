@@ -302,7 +302,7 @@ const AdminPage = () => {
                 <div className="mt-4 sm:mt-0 sm:hidden">
                   <button
                     onClick={handleAddProduct}
-                    className="w-full flex items-center justify-center px-4 py-2 bg-purple-700 text-white rounded-md hover:bg-purple-800 text-sm font-medium"
+                    className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium"
                   >
                     <span className="flex items-center">
                       <Plus size={14} className="mr-2" />
