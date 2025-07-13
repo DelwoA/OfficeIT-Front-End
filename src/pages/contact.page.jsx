@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Clock,
-  Send,
-  Facebook,
-  MessageCircle,
-} from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Send, Facebook } from "lucide-react";
 import { toast } from "sonner";
 
 // Custom WhatsApp icon component to match Lucide React styling
@@ -195,7 +187,7 @@ const ContactPage = () => {
         toast.error("Failed to send message", {
           id: loadingToastId,
           description:
-            "Your message couldn't be delivered. Please try again or contact us directly at officeic.kc@gmail.com",
+            "Your message couldn't be delivered. Please try again or contact us directly at info@officeit.lk",
           duration: 6000,
         });
       }
@@ -236,7 +228,7 @@ const ContactPage = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {/* Address Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6 text-center group hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white h-auto rounded-xl shadow-lg p-6 text-center justify-center group hover:shadow-xl transition-shadow duration-300">
               <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                 <MapPin className="w-8 h-8 text-white" />
               </div>
@@ -287,10 +279,16 @@ const ContactPage = () => {
                 Email Us
               </h3>
               <Link
-                to="mailto:officeic.kc@gmail.com"
+                to="mailto:info@officeit.lk"
                 className="text-gray-600 hover:text-purple-600 transition-colors duration-200 block text-sm"
               >
-                officeic.kc@gmail.com
+                info@officeit.lk
+              </Link>
+              <Link
+                to="mailto:chathuranga@officeit.lkk"
+                className="text-gray-600 hover:text-purple-600 transition-colors duration-200 block text-sm"
+              >
+                chathuranga@officeit.lk
               </Link>
             </div>
 
@@ -303,10 +301,18 @@ const ContactPage = () => {
                 Business Hours
               </h3>
               <div className="space-y-1 text-sm text-gray-600">
-                <p>Monday - Friday</p>
-                <p className="font-medium">9:00 AM - 6:00 PM</p>
-                <p>Saturday</p>
-                <p className="font-medium">9:00 AM - 2:00 PM</p>
+                <div className="flex justify-center">
+                  <p className="mr-3">Monday - Friday:</p>
+                  <p className="font-medium">8:30 AM - 5:30 PM</p>
+                </div>
+                <div className="flex justify-center">
+                  <p className="mr-3">Saturday:</p>
+                  <p className="font-medium">8:30 AM - 1:30 PM</p>
+                </div>
+                <div className="flex justify-center">
+                  <p className="mr-3">Sunday:</p>
+                  <p className="font-medium">Closed</p>
+                </div>
               </div>
             </div>
           </div>
@@ -476,7 +482,7 @@ const ContactPage = () => {
               {/* Social Media Links */}
               <div className="space-y-4 mb-8">
                 <Link
-                  to="https://www.facebook.com/Officeitpvtltd"
+                  to="https://www.facebook.com/officeitpvtltd"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200 group"
@@ -555,16 +561,14 @@ const ContactPage = () => {
           </div>
 
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="aspect-w-16 aspect-h-9">
+            <div className="relative w-full h-96 md:h-[450px] lg:h-72 border-2 border-gray-200 rounded-xl shadow-xl shadow-purple-100/40">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3937.760234696!2d80.3670562!3d7.4804306!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae3391721cf742f%3A0xe12fa333b13596b9!2z4LK44LGB4LKz4LK6IOCyuOCzgOCyteCyuiDgspngrrLgspQg4LC14LC_4LKQ4LOU4LKv4LKy4LKwIOCyleCzgOCysOCzgOCyoyAtIOCyuOCzgOCypOCzigsgc2V3YW5hIG5lcnNpbmcgc2Nob29sIGt1cnVuZWdhbGE!5e0!3m2!1sen!2slk!4v1699999999999!5m2!1sen!2slk"
-                width="100%"
-                height="450"
-                style={{ border: 0 }}
+                className="absolute inset-0 w-full h-full border-0 rounded-xl"
                 allowFullScreen=""
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                className="w-full h-full"
+                title="Office IT Location Map"
               />
             </div>
           </div>

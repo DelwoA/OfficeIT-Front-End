@@ -136,10 +136,10 @@ const Footer = () => {
                 <Mail className="mr-3 mt-1 h-4 w-4 text-purple-500 flex-shrink-0" />
                 <div className="text-gray-400 text-sm">
                   <Link
-                    to="mailto:officeic.kc@gmail.com"
+                    to="mailto:info@officeit.lk"
                     className="hover:text-white transition-colors duration-200"
                   >
-                    officeic.kc@gmail.com
+                    info@officeit.lk
                   </Link>
                 </div>
               </li>
