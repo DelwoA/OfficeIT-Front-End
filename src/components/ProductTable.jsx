@@ -297,7 +297,7 @@ const ProductTable = ({
                           }}
                           className="sr-only peer"
                         />
-                        <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                        <div className="relative w-11 h-6 bg-gray-200 rounded-full peer-focus:outline-none peer-checked:bg-purple-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:w-5 after:h-5 after:bg-white after:border after:border-gray-300 after:rounded-full after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
                         <Star
                           size={16}
                           className={`ml-2 transition-colors ${
@@ -340,56 +340,142 @@ const ProductTable = ({
       </div>
 
       {/* Mobile Card View */}
-      <div className="lg:hidden space-y-4">
+      <div className="lg:hidden space-y-3">
         {products.map((product) => (
           <div
             key={product.id}
-            className={`bg-white border border-gray-200 rounded-lg shadow-sm transition-all duration-200 ease-in-out ${
+            className={`bg-white border border-gray-200 rounded-xl shadow-sm transition-all duration-200 ease-in-out ${
               expandedProductId === product.id
-                ? "ring-2 ring-blue-200 shadow-md"
+                ? "shadow-lg border-purple-200"
                 : "hover:shadow-md hover:border-gray-300"
             }`}
           >
+            {/* Main Product Row - Clean and Simple */}
             <div
               className="p-4 cursor-pointer"
               onClick={() => handleRowClick(product.id)}
             >
-              <div className="flex items-start space-x-4">
+              <div className="flex items-center space-x-4">
+                {/* Product Image */}
                 <div className="h-16 w-16 flex-shrink-0">
                   <img
-                    className="h-16 w-16 rounded-md object-cover"
+                    className="h-16 w-16 rounded-lg object-cover shadow-sm"
                     src={product.image}
                     alt={product.name}
                   />
                 </div>
+
+                {/* Product Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="text-sm font-medium text-gray-900 truncate flex items-center">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm [@media(min-width:570px)]:text-base font-semibold text-gray-900 truncate pr-2">
                         {product.name}
-                        <div className="ml-2 flex-shrink-0">
-                          {expandedProductId === product.id ? (
-                            <ChevronUp
-                              size={16}
-                              className="text-gray-400 transition-transform duration-200"
-                            />
-                          ) : (
-                            <ChevronDown
-                              size={16}
-                              className="text-gray-400 transition-transform duration-200"
-                            />
-                          )}
-                        </div>
                       </h3>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-xs [@media(min-width:570px)]:text-sm text-gray-500 mt-1">
                         {product.category}
                       </p>
+                      <div className="mt-2 flex items-center justify-between">
+                        <div className="text-xs [@media(min-width:570px)]:text-sm font-medium text-gray-900">
+                          {product.discount > 0 ? (
+                            <div className="flex items-center space-x-2">
+                              <span className="line-through text-gray-400 text-xs">
+                                ${product.price.toFixed(2)}
+                              </span>
+                              <span className="text-purple-600 font-semibold">
+                                ${product.discount.toFixed(2)}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-gray-900 font-semibold">
+                              ${product.price.toFixed(2)}
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          className={`px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            product.availability === "In Stock"
+                              ? "bg-green-100 text-green-800"
+                              : product.availability === "Out of Stock"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
+                          {product.availability}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex space-x-2 ml-2 items-center">
-                      <label
-                        className="relative inline-flex items-center cursor-pointer"
-                        onClick={(e) => e.stopPropagation()}
+
+                    {/* Expand/Collapse Indicator */}
+                    <div className="flex-shrink-0 ml-2">
+                      {expandedProductId === product.id ? (
+                        <ChevronUp
+                          size={18}
+                          className="[@media(min-width:570px)]:w-5 [@media(min-width:570px)]:h-5 text-purple-500 transition-transform duration-200"
+                        />
+                      ) : (
+                        <ChevronDown
+                          size={18}
+                          className="[@media(min-width:570px)]:w-5 [@media(min-width:570px)]:h-5 text-gray-400 transition-transform duration-200"
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Expanded Content - Actions and Details */}
+            {expandedProductId === product.id && (
+              <div className="border-t border-gray-200">
+                {/* Action Buttons Section */}
+                <div className="px-4 py-3 bg-gray-50 rounded-b-xl">
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-sm [@media(min-width:570px)]:text-sm font-semibold text-gray-900">
+                      Product Actions
+                    </h4>
+                    {product.featured && (
+                      <span className="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full font-medium">
+                        Featured
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    {/* Edit and Delete Buttons */}
+                    <div className="flex items-center space-x-0.5">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEditProduct(product);
+                        }}
+                        className="flex items-center space-x-1 pl-0.5 pr-3 py-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors text-xs [@media(min-width:570px)]:text-sm font-medium"
                       >
+                        <Edit
+                          size={16}
+                          className="[@media(min-width:570px)]:w-4 [@media(min-width:570px)]:h-4"
+                        />
+                        <span>Edit</span>
+                      </button>
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <DeleteConfirmation
+                          onConfirm={() => onDeleteProduct(product.id)}
+                          itemName={product.name}
+                        >
+                          <button className="flex items-center space-x-1 px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors text-xs [@media(min-width:570px)]:text-sm font-medium">
+                            <Trash2
+                              size={16}
+                              className="[@media(min-width:570px)]:w-4 [@media(min-width:570px)]:h-4"
+                            />
+                            <span>Delete</span>
+                          </button>
+                        </DeleteConfirmation>
+                      </div>
+                    </div>
+
+                    {/* Featured Toggle */}
+                    <div className="flex items-center space-x-3">
+                      <label className="relative inline-flex items-center cursor-pointer">
                         <input
                           type="checkbox"
                           checked={product.featured}
@@ -399,116 +485,60 @@ const ProductTable = ({
                           }}
                           className="sr-only peer"
                         />
-                        <div className="relative w-8 h-4 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-purple-600"></div>
-                        <Star
-                          size={12}
-                          className={`ml-1 transition-colors ${
-                            product.featured
-                              ? "text-yellow-500 fill-yellow-500"
-                              : "text-gray-400"
-                          }`}
-                        />
+                        <div className="relative mr-1 w-11 h-6 bg-gray-200 rounded-full peer-focus:outline-none peer-checked:bg-purple-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:w-5 after:h-5 after:bg-white after:border after:border-gray-300 after:rounded-full after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
                       </label>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onEditProduct(product);
-                        }}
-                        className="text-blue-600 hover:text-blue-900 p-1 hover:bg-blue-50 rounded transition-colors"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <div onClick={(e) => e.stopPropagation()}>
-                        <DeleteConfirmation
-                          onConfirm={() => onDeleteProduct(product.id)}
-                          itemName={product.name}
-                        >
-                          <button className="text-red-600 hover:text-red-900 p-1 hover:bg-red-50 rounded transition-colors">
-                            <Trash2 size={16} />
-                          </button>
-                        </DeleteConfirmation>
-                      </div>
                     </div>
-                  </div>
-                  <div className="mt-2 flex items-center justify-between">
-                    <div className="text-sm font-medium text-gray-900">
-                      {product.discount > 0 ? (
-                        <div className="flex items-center space-x-2">
-                          <span className="line-through text-gray-500 text-xs">
-                            ${product.price.toFixed(2)}
-                          </span>
-                          <span className="text-purple-600 font-medium">
-                            ${product.discount.toFixed(2)}
-                          </span>
-                        </div>
-                      ) : (
-                        `$${product.price.toFixed(2)}`
-                      )}
-                    </div>
-                    <span
-                      className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        product.availability === "In Stock"
-                          ? "bg-green-100 text-green-800"
-                          : product.availability === "Out of Stock"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}
-                    >
-                      {product.availability}
-                    </span>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Mobile Expanded Content */}
-            {expandedProductId === product.id && (
-              <div className="border-t border-gray-200 p-4 bg-gray-50 transition-all duration-300 ease-in-out">
-                <div className="space-y-6">
-                  {/* Product Image and Basic Info */}
-                  <div className="text-center">
-                    <div className="aspect-square w-48 mx-auto mb-4">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover rounded-lg shadow-md"
-                      />
-                    </div>
-                    <p className="text-gray-600 text-sm leading-relaxed">
-                      {product.description}
-                    </p>
-                  </div>
-
-                  {/* Mobile Product Details */}
+                {/* Product Details Section */}
+                <div className="p-4">
                   <div className="space-y-4">
-                    {/* Price and Availability */}
-                    <div className="bg-white rounded-lg p-3 shadow-sm">
-                      <h4 className="text-sm font-semibold text-gray-900 mb-2">
-                        Pricing & Availability
+                    {/* Product Image and Description */}
+                    <div className="text-center">
+                      <div className="aspect-square w-48 mx-auto mb-4">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover rounded-lg shadow-md"
+                        />
+                      </div>
+                      <p className="text-gray-600 text-xs [@media(min-width:570px)]:text-sm leading-relaxed">
+                        {product.description}
+                      </p>
+                    </div>
+
+                    {/* Pricing Details */}
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <h4 className="text-sm [@media(min-width:570px)]:text-sm font-semibold text-gray-900 mb-2">
+                        Pricing Details
                       </h4>
-                      <div className="space-y-2 text-xs">
+                      <div className="space-y-2 text-xs [@media(min-width:570px)]:text-sm">
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Price:</span>
-                          <div className="text-right">
-                            {product.discount > 0 ? (
-                              <div>
-                                <div className="line-through text-gray-500">
-                                  ${product.price.toFixed(2)}
-                                </div>
-                                <div className="text-purple-600 font-bold">
-                                  ${product.discount.toFixed(2)}
-                                </div>
-                              </div>
-                            ) : (
-                              <span className="text-gray-900 font-bold">
-                                ${product.price.toFixed(2)}
-                              </span>
-                            )}
-                          </div>
+                          <span className="text-gray-600">Original Price:</span>
+                          <span className="text-gray-900 font-medium">
+                            ${product.price.toFixed(2)}
+                          </span>
                         </div>
+                        {product.discount > 0 && (
+                          <>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Sale Price:</span>
+                              <span className="text-purple-600 font-bold">
+                                ${product.discount.toFixed(2)}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">You Save:</span>
+                              <span className="text-green-600 font-medium">
+                                ${(product.price - product.discount).toFixed(2)}
+                              </span>
+                            </div>
+                          </>
+                        )}
                         <div className="flex justify-between">
                           <span className="text-gray-600">Category:</span>
-                          <span className="text-gray-900">
+                          <span className="text-gray-900 font-medium">
                             {product.category}
                           </span>
                         </div>
@@ -516,21 +546,33 @@ const ProductTable = ({
                     </div>
 
                     {/* Technical Specifications */}
-                    <div className="bg-white rounded-lg p-3 shadow-sm">
-                      <h4 className="text-sm font-semibold text-gray-900 mb-2">
-                        Specifications
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <h4 className="text-sm [@media(min-width:570px)]:text-sm font-semibold text-gray-900 mb-2">
+                        Technical Specifications
                       </h4>
-                      <div className="space-y-1 text-xs">
+                      <div className="space-y-1 text-xs [@media(min-width:570px)]:text-sm">
                         {Object.entries(product.specs).map(([key, value]) => (
                           <div key={key} className="flex justify-between">
                             <span className="text-gray-600 capitalize">
                               {key.replace(/([A-Z])/g, " $1").trim()}:
                             </span>
-                            <span className="text-gray-900 text-right ml-2">
+                            <span className="text-gray-900 text-right ml-2 font-medium">
                               {value}
                             </span>
                           </div>
                         ))}
+                      </div>
+                    </div>
+
+                    {/* Product ID */}
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600 text-xs [@media(min-width:570px)]:text-sm">
+                          Product ID:
+                        </span>
+                        <span className="text-gray-900 font-mono text-xs [@media(min-width:570px)]:text-sm">
+                          {product.id}
+                        </span>
                       </div>
                     </div>
                   </div>
