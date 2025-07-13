@@ -207,7 +207,7 @@ const ContactPage = () => {
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-pink-700">
         <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative container mx-auto px-4 py-20 lg:py-28">
+        <div className="relative container mx-auto px-7 py-20 lg:py-28">
           <div className="text-center text-white">
             <h1 className="text-4xl lg:text-6xl font-bold mb-4">Contact Us</h1>
             <p className="text-xl lg:text-2xl text-purple-100 mb-8 max-w-3xl mx-auto">
@@ -224,9 +224,9 @@ const ContactPage = () => {
       </section>
 
       {/* Contact Information Cards */}
-      <section className="py-16 lg:py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+      <section className="py-16 px-7 lg:px-10 lg:py-20">
+        <div className="mx-auto max-w-screen-2xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 [@media(min-width:1388px)]:grid-cols-4 gap-6 md:gap-8">
             {/* Address Card */}
             <div className="bg-white h-auto rounded-xl shadow-lg p-6 text-center justify-center group hover:shadow-xl transition-shadow duration-300">
               <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
@@ -301,15 +301,15 @@ const ContactPage = () => {
                 Business Hours
               </h3>
               <div className="space-y-1 text-sm text-gray-600">
-                <div className="flex justify-center">
+                <div className="flex flex-col lg:flex-row justify-center lg:space-x-2">
                   <p className="mr-3">Monday - Friday:</p>
                   <p className="font-medium">8:30 AM - 5:30 PM</p>
                 </div>
-                <div className="flex justify-center">
+                <div className="flex flex-col lg:flex-row justify-center lg:space-x-2">
                   <p className="mr-3">Saturday:</p>
                   <p className="font-medium">8:30 AM - 1:30 PM</p>
                 </div>
-                <div className="flex justify-center">
+                <div className="flex flex-col lg:flex-row justify-center lg:space-x-2">
                   <p className="mr-3">Sunday:</p>
                   <p className="font-medium">Closed</p>
                 </div>
@@ -321,7 +321,7 @@ const ContactPage = () => {
 
       {/* Contact Form and Social Media Section */}
       <section className="py-16 lg:py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-7">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
             {/* Contact Form */}
             <div>
@@ -549,7 +549,7 @@ const ContactPage = () => {
 
       {/* Map Section */}
       <section className="py-16 lg:py-20 bg-gray-100">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-7">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
               Find Us

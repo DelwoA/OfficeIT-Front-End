@@ -14,7 +14,7 @@ const Navigation = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 shadow-sm">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center ml-5">
@@ -25,7 +25,7 @@ const Navigation = () => {
               />
             </Link>
           </div>
-          <nav className="hidden md:flex items-center space-x-9">
+          <nav className="hidden md:flex text-base md:text-sm lg:text-base items-center space-x-6 2xl:space-x-9">
             <Link
               to="/"
               className="text-gray-800 hover:text-purple-700 font-medium"
@@ -45,8 +45,7 @@ const Navigation = () => {
               About
             </Link>
           </nav>
-          {/* TODO: Implement proper routing to contact page */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center md:space-x-2 xl:space-x-4 2xl:space-x-6">
             <UserButton />
             <SignedIn>
               <Button
@@ -58,7 +57,7 @@ const Navigation = () => {
               >
                 <Link
                   to="/officeit-admin"
-                  className="text-gray-800 hover:text-purple-700 hover:bg-purple-50 font-medium"
+                  className="text-gray-800 hover:text-purple-700 hover:bg-purple-50 font-medium text-base md:text-sm lg:text-base"
                 >
                   Admin Dashboard
                 </Link>
@@ -73,7 +72,7 @@ const Navigation = () => {
             </button>
             <Link
               to="/contact"
-              className="px-4 py-2 rounded-md bg-gradient-to-r from-purple-700 to-pink-500 text-white font-medium hover:opacity-90 transition-opacity"
+              className="px-4 py-2 text-base md:text-sm lg:text-base rounded-md bg-gradient-to-r from-purple-700 to-pink-500 text-white font-medium hover:opacity-90 transition-opacity"
             >
               Contact Us
             </Link>
@@ -155,7 +154,7 @@ const Navigation = () => {
             className="block px-3 py-2 mt-3 rounded-md bg-gradient-to-r from-purple-700 to-pink-500 text-white hover:opacity-90 transition-opacity duration-200"
             onClick={() => setIsOpen(false)}
           >
-            Browse Products
+            Contact Us
           </Link>
         </div>
       </div>

@@ -7,6 +7,7 @@ import CategoryManagementModal from "@/components/CategoryManagementModal";
 import FeaturedProductsInfoModal from "@/components/FeaturedProductsInfoModal";
 import { products, saveProducts, getProducts } from "@/data/products";
 import { SignedIn } from "@clerk/clerk-react";
+import { Plus } from "lucide-react";
 
 const AdminPage = () => {
   const [productList, setProductList] = useState(getProducts);
@@ -183,7 +184,7 @@ const AdminPage = () => {
           onAddProduct={handleAddProduct}
           onEditCategories={handleEditCategories}
         />
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:pt-8 pb-28">
+        <div className="container mx-auto px-7 sm:px-6 lg:px-8 py-6 lg:pt-8 pb-16 sm:pb-24">
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6 mb-6 lg:mb-8">
             <div className="bg-white rounded-lg shadow-sm p-4 lg:p-6">
@@ -303,7 +304,10 @@ const AdminPage = () => {
                     onClick={handleAddProduct}
                     className="w-full flex items-center justify-center px-4 py-2 bg-purple-700 text-white rounded-md hover:bg-purple-800 text-sm font-medium"
                   >
-                    Add Product
+                    <span className="flex items-center">
+                      <Plus size={14} className="mr-2" />
+                      Add Product
+                    </span>
                   </button>
                 </div>
               </div>

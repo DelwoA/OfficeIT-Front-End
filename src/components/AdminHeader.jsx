@@ -10,7 +10,7 @@ const AdminHeader = ({ onAddProduct, onEditCategories }) => {
   const { user } = useUser();
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-11">
+    <div className="container mx-auto px-7 sm:px-6 lg:px-8 pt-11">
       {/* Mobile Header */}
       <div className="flex flex-col space-y-4 sm:hidden">
         <div className="flex justify-between items-center">
@@ -20,30 +20,14 @@ const AdminHeader = ({ onAddProduct, onEditCategories }) => {
             </p>
             <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
           </div>
-          <Link
-            to="/admin-login"
-            className="flex items-center px-3 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm"
-          >
-            <LogOut size={16} className="mr-2" />
-            Logout
-          </Link>
         </div>
-        <div className="flex flex-col space-y-3">
-          <button
-            onClick={onEditCategories}
-            className="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
-          >
-            <Settings size={18} className="mr-2" />
-            Edit Categories
-          </button>
-          <button
-            onClick={onAddProduct}
-            className="w-full flex items-center justify-center px-4 py-3 bg-purple-700 text-white rounded-md hover:bg-purple-800 font-medium"
-          >
-            <Plus size={18} className="mr-2" />
-            Add Product
-          </button>
-        </div>
+        <button
+          onClick={onEditCategories}
+          className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
+        >
+          <Settings size={18} className="mr-2" />
+          Edit Categories
+        </button>
       </div>
 
       {/* Desktop Header */}
