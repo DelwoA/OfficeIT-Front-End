@@ -1,16 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AdminHeader from "@/components/AdminHeader";
 import ProductTable from "@/components/ProductTable";
 import AddProductModal from "@/components/AddProductModal";
 import EditProductModal from "@/components/EditProductModal";
 import CategoryManagementModal from "@/components/CategoryManagementModal";
 import FeaturedProductsInfoModal from "@/components/FeaturedProductsInfoModal";
-import { products, saveProducts, getProducts } from "@/data/products";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import {
+  getProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from "@/lib/products";
+import { getCategories } from "@/lib/categories";
 import { SignedIn } from "@clerk/clerk-react";
 import { Plus } from "lucide-react";
+import { toast } from "sonner";
 
 const AdminPage = () => {
-  const [productList, setProductList] = useState(getProducts);
+  const [productList, setProductList] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [sortField, setSortField] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc"); // 'asc' or 'desc'
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -18,20 +29,42 @@ const AdminPage = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
-  // Add a separate categories state to manage all available categories
-  const [availableCategories, setAvailableCategories] = useState(() => {
-    // Initialize with categories from current products (including localStorage)
-    const currentProducts = getProducts();
-    const existingCategories = [
-      ...new Set(currentProducts.map((product) => product.category)),
-    ];
-    return existingCategories;
-  });
+  // Fetch products and categories on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-  const handleDeleteProduct = (id) => {
-    const updatedList = productList.filter((product) => product.id !== id);
-    setProductList(updatedList);
-    saveProducts(updatedList);
+        // Fetch products and categories in parallel
+        const [productsData, categoriesData] = await Promise.all([
+          getProducts(),
+          getCategories(),
+        ]);
+
+        setProductList(productsData);
+        setCategories(categoriesData);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError("Failed to load products and categories. Please try again.");
+        toast.error("Failed to load data from server");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleDeleteProduct = async (id) => {
+    try {
+      await deleteProduct(id);
+      setProductList((prev) => prev.filter((product) => product._id !== id));
+      toast.success("Product deleted successfully");
+    } catch (err) {
+      console.error("Error deleting product:", err);
+      toast.error("Failed to delete product");
+    }
   };
 
   const handleAddProduct = () => {
@@ -60,122 +93,151 @@ const AdminPage = () => {
     setIsCategoryModalOpen(false);
   };
 
-  const handleAddNewProduct = (newProduct) => {
-    setProductList((prev) => {
-      const updatedList = [...prev, newProduct];
-      saveProducts(updatedList);
-      return updatedList;
-    });
+  const handleAddNewProduct = async (newProduct) => {
+    try {
+      // Create product on backend
+      const createdProduct = await createProduct(newProduct);
 
-    // Also add the category to available categories if it's not already there
-    if (!availableCategories.includes(newProduct.category)) {
-      setAvailableCategories((prev) => [...prev, newProduct.category]);
+      // Update local state
+      setProductList((prev) => [...prev, createdProduct]);
+
+      // Add category to available categories if it's new
+      if (!categories.find((cat) => cat.name === newProduct.category)) {
+        setCategories((prev) => [
+          ...prev,
+          { name: newProduct.category, _id: Date.now().toString() },
+        ]);
+      }
+
+      toast.success("Product added successfully");
+    } catch (err) {
+      console.error("Error adding product:", err);
+      toast.error("Failed to add product");
     }
-
-    // Show success message or toast here if needed
   };
 
-  const handleEditProductSave = (updatedProduct) => {
-    setProductList((prev) => {
-      const updatedList = prev.map((product) =>
-        product.id === updatedProduct.id ? updatedProduct : product
+  const handleEditProductSave = async (updatedProduct) => {
+    try {
+      // Update product on backend
+      const savedProduct = await updateProduct(
+        updatedProduct._id,
+        updatedProduct
       );
-      saveProducts(updatedList);
-      return updatedList;
-    });
 
-    // Also add the category to available categories if it's not already there
-    if (!availableCategories.includes(updatedProduct.category)) {
-      setAvailableCategories((prev) => [...prev, updatedProduct.category]);
+      // Update local state
+      setProductList((prev) =>
+        prev.map((product) =>
+          product._id === updatedProduct._id ? savedProduct : product
+        )
+      );
+
+      // Add category to available categories if it's new
+      if (!categories.find((cat) => cat.name === updatedProduct.category)) {
+        setCategories((prev) => [
+          ...prev,
+          { name: updatedProduct.category, _id: Date.now().toString() },
+        ]);
+      }
+
+      toast.success("Product updated successfully");
+    } catch (err) {
+      console.error("Error updating product:", err);
+      toast.error("Failed to update product");
     }
-
-    // Show success message or toast here if needed
   };
 
   const handleUpdateCategories = (updatedCategories) => {
-    // Update the available categories state with the new categories
-    const categoryNames = updatedCategories.map((cat) => cat.name);
-    setAvailableCategories(categoryNames);
-
-    // If a category was renamed, update all products with that category
-    // This is a placeholder - in a real app, you'd handle this more robustly
-    const oldCategories = [...new Set(productList.map((p) => p.category))];
-    const newCategoryNames = updatedCategories.map((c) => c.name);
-
-    // For now, we'll just log the change
-    // In a real implementation, you'd update products when categories are renamed
-    console.log("Categories updated:", updatedCategories);
+    // Update the categories state
+    setCategories(updatedCategories);
+    toast.success("Categories updated successfully");
   };
 
-  const handleToggleFeatured = (productId) => {
-    setProductList((prev) => {
-      const updatedList = prev.map((product) =>
-        product.id === productId
-          ? { ...product, featured: !product.featured }
-          : product
+  const handleToggleFeatured = async (productId) => {
+    try {
+      const product = productList.find((p) => p._id === productId);
+      if (!product) return;
+
+      const updatedProduct = {
+        ...product,
+        featured: !product.featured,
+      };
+
+      // Update product on backend
+      const savedProduct = await updateProduct(productId, updatedProduct);
+
+      // Update local state
+      setProductList((prev) =>
+        prev.map((p) => (p._id === productId ? savedProduct : p))
       );
-      // Save to localStorage whenever featured status changes
-      saveProducts(updatedList);
-      return updatedList;
-    });
+    } catch (err) {
+      console.error("Error toggling featured status:", err);
+      toast.error("Failed to update featured status");
+    }
   };
 
   const handleSort = (field) => {
-    let direction = "asc";
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
 
-    // If clicking the same field, toggle direction
-    if (sortField === field && sortDirection === "asc") {
-      direction = "desc";
+  const sortedProducts = [...productList].sort((a, b) => {
+    if (!sortField) return 0;
+
+    let aValue = a[sortField];
+    let bValue = b[sortField];
+
+    // Handle string sorting
+    if (typeof aValue === "string" && typeof bValue === "string") {
+      aValue = aValue.toLowerCase();
+      bValue = bValue.toLowerCase();
     }
 
-    setSortField(field);
-    setSortDirection(direction);
+    if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
+    if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
+    return 0;
+  });
 
-    // Sort the product list
-    const sortedProducts = [...productList].sort((a, b) => {
-      let aValue, bValue;
+  // Show loading spinner while fetching data
+  if (loading) {
+    return (
+      <SignedIn>
+        <div className="min-h-screen bg-gray-50 pt-16">
+          <div className="container mx-auto px-7 md:px-12">
+            <div className="flex items-center justify-center py-16">
+              <LoadingSpinner />
+            </div>
+          </div>
+        </div>
+      </SignedIn>
+    );
+  }
 
-      switch (field) {
-        case "name":
-          aValue = a.name.toLowerCase();
-          bValue = b.name.toLowerCase();
-          break;
-        case "category":
-          aValue = a.category.toLowerCase();
-          bValue = b.category.toLowerCase();
-          break;
-        case "price":
-          // Use discount price if available, otherwise regular price
-          aValue = a.discount > 0 ? a.discount : a.price;
-          bValue = b.discount > 0 ? b.discount : b.price;
-          break;
-        case "availability":
-          // In Stock = 1, Out of Stock = 0 for ascending (In Stock first)
-          aValue = a.availability === "In Stock" ? 1 : 0;
-          bValue = b.availability === "In Stock" ? 1 : 0;
-          break;
-        default:
-          return 0;
-      }
-
-      if (field === "price") {
-        // Numerical comparison for price
-        return direction === "asc" ? aValue - bValue : bValue - aValue;
-      } else if (field === "availability") {
-        // For availability, desc means Out of Stock first
-        return direction === "asc" ? bValue - aValue : aValue - bValue;
-      } else {
-        // String comparison for name and category
-        if (direction === "asc") {
-          return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-        } else {
-          return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-        }
-      }
-    });
-
-    setProductList(sortedProducts);
-  };
+  // Show error message if data fetching failed
+  if (error) {
+    return (
+      <SignedIn>
+        <div className="min-h-screen bg-gray-50 pt-16">
+          <div className="container mx-auto px-7 md:px-12">
+            <div className="flex items-center justify-center py-16">
+              <div className="text-center">
+                <p className="text-red-600 mb-4">{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors font-medium"
+                >
+                  Try Again
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </SignedIn>
+    );
+  }
 
   return (
     <SignedIn>
@@ -342,7 +404,7 @@ const AdminPage = () => {
                 </div>
               ) : (
                 <ProductTable
-                  products={productList}
+                  products={sortedProducts}
                   onDeleteProduct={handleDeleteProduct}
                   onEditProduct={handleEditProduct}
                   onSort={handleSort}
@@ -361,7 +423,7 @@ const AdminPage = () => {
           onClose={handleModalClose}
           onAddProduct={handleAddNewProduct}
           products={productList}
-          availableCategories={availableCategories}
+          availableCategories={categories.map((cat) => cat.name)}
         />
 
         {/* Edit Product Modal */}
@@ -370,7 +432,7 @@ const AdminPage = () => {
           onClose={handleEditModalClose}
           onEditProduct={handleEditProductSave}
           product={selectedProduct}
-          availableCategories={availableCategories}
+          availableCategories={categories.map((cat) => cat.name)}
         />
 
         {/* Category Management Modal */}

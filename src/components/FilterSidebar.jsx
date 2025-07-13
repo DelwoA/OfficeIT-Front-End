@@ -77,8 +77,8 @@ const FilterSidebar = ({
             />
           </div>
           <div className="flex justify-between text-sm text-gray-600">
-            <span>${priceRange[0]}</span>
-            <span>${priceRange[1]}</span>
+            <span>Rs. {priceRange[0]}</span>
+            <span>Rs. {priceRange[1]}</span>
           </div>
           <div className="flex gap-2">
             <input
@@ -219,8 +219,8 @@ const FilterSidebar = ({
                 />
               </div>
               <div className="flex justify-between text-base font-medium text-gray-700">
-                <span>${priceRange[0]}</span>
-                <span>${priceRange[1]}</span>
+                <span>Rs. {priceRange[0]}</span>
+                <span>Rs. {priceRange[1]}</span>
               </div>
               <div className="flex gap-3">
                 <div className="flex-1">

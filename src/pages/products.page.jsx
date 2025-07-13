@@ -3,7 +3,9 @@ import { useLocation } from "react-router-dom";
 import { Filter, Search } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import FilterSidebar from "@/components/FilterSidebar";
-import { products } from "@/data/products";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { getProducts } from "@/lib/products";
+import { getCategories } from "@/lib/categories";
 
 const ProductsPage = () => {
   const location = useLocation();
@@ -11,6 +13,10 @@ const ProductsPage = () => {
   const initialCategory = queryParams.get("category");
   const shouldFocusSearch = queryParams.get("focus") === "search";
 
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [priceRange, setPriceRange] = useState([0, 2000]);
   const [availabilityFilter, setAvailabilityFilter] = useState([]);
@@ -19,10 +25,39 @@ const ProductsPage = () => {
 
   const searchInputRef = useRef(null);
 
-  const categories = Array.from(
-    new Set(products.map((product) => product.category))
-  );
-  const maxPrice = Math.max(...products.map((product) => product.price));
+  // Fetch products and categories on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Fetch products and categories in parallel
+        const [productsData, categoriesData] = await Promise.all([
+          getProducts(),
+          getCategories(),
+        ]);
+
+        setProducts(productsData);
+        setCategories(categoriesData.map((cat) => cat.name));
+
+        // Set max price range based on actual product data
+        if (productsData.length > 0) {
+          const maxPrice = Math.max(
+            ...productsData.map((product) => product.price)
+          );
+          setPriceRange([0, maxPrice]);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError("Failed to load products and categories. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const filteredProducts = products.filter((product) => {
     // Filter by search query
@@ -47,6 +82,11 @@ const ProductsPage = () => {
     return true;
   });
 
+  const maxPrice =
+    products.length > 0
+      ? Math.max(...products.map((product) => product.price))
+      : 2000;
+
   useEffect(() => {
     // Update URL when filters change
     const params = new URLSearchParams();
@@ -58,16 +98,51 @@ const ProductsPage = () => {
   }, [selectedCategory]);
 
   useEffect(() => {
-    // Set max price range on component mount
-    setPriceRange([0, maxPrice]);
-  }, [maxPrice]);
-
-  useEffect(() => {
     // Auto-focus search input if coming from navigation search
     if (shouldFocusSearch && searchInputRef.current) {
       searchInputRef.current.focus();
     }
   }, [shouldFocusSearch]);
+
+  // Show loading spinner while fetching data
+  if (loading) {
+    return (
+      <div className="w-full">
+        <div className="container mx-auto px-7 md:px-12 pt-9 pb-32">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
+            Our Products
+          </h1>
+          <div className="flex items-center justify-center py-16">
+            <LoadingSpinner />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error message if data fetching failed
+  if (error) {
+    return (
+      <div className="w-full">
+        <div className="container mx-auto px-7 md:px-12 pt-9 pb-32">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
+            Our Products
+          </h1>
+          <div className="flex items-center justify-center py-16">
+            <div className="text-center">
+              <p className="text-red-600 mb-4">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors font-medium"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
@@ -192,7 +267,7 @@ const ProductsPage = () => {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                 {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard key={product._id} product={product} />
                 ))}
               </div>
             )}

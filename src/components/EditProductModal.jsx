@@ -356,8 +356,8 @@ const EditProductModal = ({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <CustomDialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-            <Edit3 className="w-6 h-6 text-blue-600" />
+          <DialogTitle className="flex items-center gap-2 text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <Edit3 className="w-6 h-6 text-purple-600" />
             Edit Product
           </DialogTitle>
           <DialogDescription>
@@ -367,9 +367,9 @@ const EditProductModal = ({
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information Section */}
-          <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg p-6 border border-blue-200">
+          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-6 border border-purple-200">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-800">
-              <Tag className="w-5 h-5 text-blue-600" />
+              <Tag className="w-5 h-5 text-purple-600" />
               Basic Information
             </h3>
 
@@ -460,7 +460,7 @@ const EditProductModal = ({
                   htmlFor="edit-price"
                   className="text-sm font-medium text-gray-700"
                 >
-                  Price ($) *
+                  Price (Rs.) *
                 </Label>
                 <Input
                   id="edit-price"
@@ -483,7 +483,7 @@ const EditProductModal = ({
                   htmlFor="edit-discount"
                   className="text-sm font-medium text-gray-700"
                 >
-                  Discount Price ($)
+                  Discount Price (Rs.)
                 </Label>
                 <Input
                   id="edit-discount"
@@ -520,7 +520,6 @@ const EditProductModal = ({
                   <SelectContent>
                     <SelectItem value="In Stock">In Stock</SelectItem>
                     <SelectItem value="Out of Stock">Out of Stock</SelectItem>
-                    <SelectItem value="Limited Stock">Limited Stock</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -639,7 +638,7 @@ const EditProductModal = ({
               disabled={!hasChanges}
               className={
                 hasChanges
-                  ? "bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white px-5 py-2"
+                  ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-5 py-2"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed px-5 py-2"
               }
             >

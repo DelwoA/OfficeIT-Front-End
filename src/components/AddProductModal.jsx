@@ -153,10 +153,9 @@ const AddProductModal = ({
 
     if (!validateForm()) return;
 
-    // Generate a unique ID (in real app, this would be handled by backend)
+    // Prepare product data for backend (no need to generate ID, backend handles it)
     const newProduct = {
       ...formData,
-      id: Date.now().toString(),
       price: parseFloat(formData.price),
       discount: formData.discount ? parseFloat(formData.discount) : 0,
       featured: false, // New products are not featured by default
@@ -272,7 +271,7 @@ const AddProductModal = ({
                   htmlFor="price"
                   className="text-sm font-medium text-gray-700"
                 >
-                  Price ($) *
+                  Price (Rs.) *
                 </Label>
                 <Input
                   id="price"
@@ -295,7 +294,7 @@ const AddProductModal = ({
                   htmlFor="discount"
                   className="text-sm font-medium text-gray-700"
                 >
-                  Discount Price ($)
+                  Discount Price (Rs.)
                 </Label>
                 <Input
                   id="discount"
@@ -346,9 +345,9 @@ const AddProductModal = ({
           </div>
 
           {/* Product Details Section */}
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6 border border-green-200">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-800">
-              <FileText className="w-5 h-5 text-blue-600" />
+              <FileText className="w-5 h-5 text-green-600" />
               Product Details
             </h3>
 

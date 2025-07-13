@@ -19,6 +19,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  getCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from "@/lib/categories";
+import { toast } from "sonner";
 
 const CategoryManagementModal = ({
   isOpen,
@@ -32,24 +39,38 @@ const CategoryManagementModal = ({
   const [newCategoryName, setNewCategoryName] = useState("");
   const [errors, setErrors] = useState({});
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // Extract unique categories from products
+  // Fetch categories from backend
   useEffect(() => {
-    if (products) {
-      const uniqueCategories = [
-        ...new Set(products.map((product) => product.category)),
-      ];
-      const categoriesWithCounts = uniqueCategories.map((category) => ({
-        id: category.toLowerCase().replace(/\s+/g, "-"),
-        name: category,
-        productCount: products.filter(
-          (product) => product.category === category
-        ).length,
-        isDefault: true,
-      }));
-      setCategories(categoriesWithCounts);
+    if (isOpen) {
+      const fetchCategories = async () => {
+        try {
+          setLoading(true);
+          const backendCategories = await getCategories();
+
+          // Add product count to each category
+          const categoriesWithCounts = backendCategories.map((category) => ({
+            id: category._id,
+            name: category.name,
+            productCount: products.filter(
+              (product) => product.category === category.name
+            ).length,
+            isDefault: true,
+          }));
+
+          setCategories(categoriesWithCounts);
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+          toast.error("Failed to load categories");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchCategories();
     }
-  }, [products]);
+  }, [isOpen, products]);
 
   const validateCategoryName = (name, excludeId = null) => {
     if (!name.trim()) {
@@ -73,26 +94,40 @@ const CategoryManagementModal = ({
     return null;
   };
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     const error = validateCategoryName(newCategoryName);
     if (error) {
       setErrors({ newCategory: error });
       return;
     }
 
-    const newCategory = {
-      id: Date.now().toString(),
-      name: newCategoryName.trim(),
-      productCount: 0,
-      isDefault: false,
-    };
+    try {
+      setLoading(true);
+      const createdCategory = await createCategory({
+        name: newCategoryName.trim(),
+      });
 
-    setCategories((prev) => [...prev, newCategory]);
-    setNewCategoryName("");
-    setErrors({});
+      const newCategory = {
+        id: createdCategory._id,
+        name: createdCategory.name,
+        productCount: 0,
+        isDefault: false,
+      };
 
-    // Notify parent component about the new category
-    onUpdateCategories?.([...categories, newCategory]);
+      setCategories((prev) => [...prev, newCategory]);
+      setNewCategoryName("");
+      setErrors({});
+
+      // Notify parent component about the new category
+      onUpdateCategories?.([...categories, newCategory]);
+      toast.success("Category added successfully");
+    } catch (error) {
+      console.error("Error adding category:", error);
+      toast.error("Failed to add category");
+      setErrors({ newCategory: "Failed to add category. Please try again." });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleStartEdit = (category) => {
@@ -101,24 +136,40 @@ const CategoryManagementModal = ({
     setErrors({});
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     const error = validateCategoryName(editingName, editingId);
     if (error) {
       setErrors({ [editingId]: error });
       return;
     }
 
-    const updatedCategories = categories.map((cat) =>
-      cat.id === editingId ? { ...cat, name: editingName.trim() } : cat
-    );
+    try {
+      setLoading(true);
+      const updatedCategory = await updateCategory(editingId, {
+        name: editingName.trim(),
+      });
 
-    setCategories(updatedCategories);
-    setEditingId(null);
-    setEditingName("");
-    setErrors({});
+      const updatedCategories = categories.map((cat) =>
+        cat.id === editingId ? { ...cat, name: updatedCategory.name } : cat
+      );
 
-    // Notify parent component about the category update
-    onUpdateCategories?.(updatedCategories);
+      setCategories(updatedCategories);
+      setEditingId(null);
+      setEditingName("");
+      setErrors({});
+
+      // Notify parent component about the category update
+      onUpdateCategories?.(updatedCategories);
+      toast.success("Category updated successfully");
+    } catch (error) {
+      console.error("Error updating category:", error);
+      toast.error("Failed to update category");
+      setErrors({
+        [editingId]: "Failed to update category. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -127,7 +178,7 @@ const CategoryManagementModal = ({
     setErrors({});
   };
 
-  const handleDeleteCategory = (categoryId) => {
+  const handleDeleteCategory = async (categoryId) => {
     const category = categories.find((cat) => cat.id === categoryId);
 
     if (category.productCount > 0) {
@@ -137,13 +188,29 @@ const CategoryManagementModal = ({
       return;
     }
 
-    const updatedCategories = categories.filter((cat) => cat.id !== categoryId);
-    setCategories(updatedCategories);
-    setDeleteConfirm(null);
-    setErrors({});
+    try {
+      setLoading(true);
+      await deleteCategory(categoryId);
 
-    // Notify parent component about the category deletion
-    onUpdateCategories?.(updatedCategories);
+      const updatedCategories = categories.filter(
+        (cat) => cat.id !== categoryId
+      );
+      setCategories(updatedCategories);
+      setDeleteConfirm(null);
+      setErrors({});
+
+      // Notify parent component about the category deletion
+      onUpdateCategories?.(updatedCategories);
+      toast.success("Category deleted successfully");
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      toast.error("Failed to delete category");
+      setErrors({
+        [categoryId]: "Failed to delete category. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClose = () => {
@@ -169,8 +236,8 @@ const CategoryManagementModal = ({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            <Tag className="w-6 h-6 text-blue-600" />
+          <DialogTitle className="flex items-center gap-2 text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <Tag className="w-6 h-6 text-purple-600" />
             Manage Categories
           </DialogTitle>
           <DialogDescription>
@@ -209,6 +276,7 @@ const CategoryManagementModal = ({
                   className={`mt-1 ${
                     errors.newCategory ? "border-red-500" : ""
                   }`}
+                  disabled={loading}
                 />
                 {errors.newCategory && (
                   <p className="text-red-500 text-xs mt-1">
@@ -218,11 +286,11 @@ const CategoryManagementModal = ({
               </div>
               <Button
                 onClick={handleAddCategory}
-                disabled={!newCategoryName.trim()}
+                disabled={!newCategoryName.trim() || loading}
                 className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
               >
                 <Plus className="w-4 h-4" />
-                Add Category
+                {loading ? "Adding..." : "Add Category"}
               </Button>
             </div>
           </div>
@@ -234,7 +302,11 @@ const CategoryManagementModal = ({
               Existing Categories ({categories.length})
             </h3>
 
-            {categories.length === 0 ? (
+            {loading && categories.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <p>Loading categories...</p>
+              </div>
+            ) : categories.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
                 <Tag className="w-12 h-12 mx-auto mb-3 text-gray-300" />
                 <p>No categories found</p>
@@ -269,6 +341,7 @@ const CategoryManagementModal = ({
                               errors[category.id] ? "border-red-500" : ""
                             }`}
                             autoFocus
+                            disabled={loading}
                           />
                           {errors[category.id] && (
                             <p className="text-red-500 text-xs mt-1">
@@ -303,6 +376,7 @@ const CategoryManagementModal = ({
                             size="sm"
                             onClick={handleSaveEdit}
                             className="h-8 px-3 bg-green-600 hover:bg-green-700"
+                            disabled={loading}
                           >
                             <Save className="w-3 h-3" />
                           </Button>
@@ -311,6 +385,7 @@ const CategoryManagementModal = ({
                             variant="outline"
                             onClick={handleCancelEdit}
                             className="h-8 px-3"
+                            disabled={loading}
                           >
                             <X className="w-3 h-3" />
                           </Button>
@@ -322,6 +397,7 @@ const CategoryManagementModal = ({
                             variant="outline"
                             onClick={() => handleStartEdit(category)}
                             className="h-8 px-3 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                            disabled={loading}
                           >
                             <Edit2 className="w-3 h-3" />
                           </Button>
@@ -333,14 +409,16 @@ const CategoryManagementModal = ({
                                   handleDeleteCategory(category.id)
                                 }
                                 className="h-8 px-3 bg-red-600 hover:bg-red-700 text-xs"
+                                disabled={loading}
                               >
-                                Confirm
+                                {loading ? "Deleting..." : "Confirm"}
                               </Button>
                               <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={() => setDeleteConfirm(null)}
                                 className="h-8 px-3 text-xs"
+                                disabled={loading}
                               >
                                 Cancel
                               </Button>
@@ -350,7 +428,7 @@ const CategoryManagementModal = ({
                               size="sm"
                               variant="outline"
                               onClick={() => setDeleteConfirm(category.id)}
-                              disabled={category.productCount > 0}
+                              disabled={category.productCount > 0 || loading}
                               className={`h-8 px-3 ${
                                 category.productCount > 0
                                   ? "text-gray-400 cursor-not-allowed"

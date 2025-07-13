@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
@@ -8,12 +8,69 @@ import {
   ArrowRight,
   Package,
 } from "lucide-react";
-import { products } from "@/data/products";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { getProductById } from "@/lib/products";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const product = products.find((p) => p.id === id);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const productData = await getProductById(id);
+        setProduct(productData);
+      } catch (err) {
+        console.error("Error fetching product:", err);
+        setError("Failed to load product details. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchProduct();
+    }
+  }, [id]);
+
+  // Show loading spinner while fetching data
+  if (loading) {
+    return (
+      <div className="bg-gray-50 min-h-screen pt-16 pb-24">
+        <div className="container mx-auto px-7 md:px-12">
+          <div className="flex items-center justify-center py-16">
+            <LoadingSpinner />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error message if data fetching failed
+  if (error) {
+    return (
+      <div className="bg-gray-50 min-h-screen pt-16 pb-24">
+        <div className="container mx-auto px-7 md:px-12">
+          <div className="flex items-center justify-center py-16">
+            <div className="text-center">
+              <p className="text-red-600 mb-4">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors font-medium"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Product Not Found Page
   if (!product) {
@@ -37,154 +94,162 @@ const ProductDetailPage = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="space-y-3">
-            <Link
-              to="/products"
-              className="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-purple-700 to-pink-500 text-white font-medium rounded-md hover:opacity-90 transition-opacity group"
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              onClick={() => navigate("/products")}
+              className="flex items-center justify-center px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors font-medium"
             >
               <Search className="h-5 w-5 mr-2" />
-              Browse All Products
-              <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Link>
-
-            <Link
-              to="/"
-              className="w-full flex items-center justify-center px-6 py-3 text-purple-700 font-medium rounded-md hover:bg-purple-50 transition-colors"
+              Browse Products
+            </button>
+            <button
+              onClick={() => navigate("/")}
+              className="flex items-center justify-center px-6 py-3 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors font-medium"
             >
-              Return to Homepage
-            </Link>
-          </div>
-
-          {/* Help Section */}
-          <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900 mb-3">
-              Need Help?
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
-              If you believe this is an error or need assistance finding a
-              specific product, please contact our support team.
-            </p>
-            {/* TODO: Include the navigation to the contact page for support. This is the Product Not Found Page. */}
-            <Link
-              to="#"
-              className="inline-flex items-center text-sm font-medium text-purple-700 hover:text-purple-900 transition-colors"
-            >
-              Contact Support
-              <ArrowRight className="h-4 w-4 ml-1" />
-            </Link>
+              Go Home
+              <ArrowRight className="h-5 w-5 ml-2" />
+            </button>
           </div>
         </div>
       </div>
     );
   }
 
-  const availabilityColor =
-    product.availability === "In Stock"
-      ? "text-green-600"
-      : product.availability === "Out of Stock"
-      ? "text-red-600"
-      : "text-yellow-600";
+  const hasDiscount = product.discount > 0;
+  const discountPercentage = hasDiscount
+    ? Math.round(((product.price - product.discount) / product.price) * 100)
+    : 0;
 
-  const availabilityIcon =
-    product.availability === "In Stock" ? (
-      <Check className="h-5 w-5" />
-    ) : (
-      <AlertTriangle className="h-5 w-5" />
-    );
-
-  // Product Detail Page
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:pt-12 lg:pb-28">
-      <button
-        onClick={() => navigate(-1)}
-        className="flex items-center text-purple-700 hover:text-purple-900 mb-6 lg:mb-9 transition-colors group"
-      >
-        <ChevronLeft className="h-5 w-5 mr-1 group-hover:-translate-x-0.5 transition-transform duration-300 ease-in-out" />
-        <span className="group-hover:translate-x-1 transition-transform duration-300 ease-in-out">
+    <div className="bg-gray-50 min-h-screen pt-16 pb-24">
+      <div className="container mx-auto px-7 md:px-12">
+        {/* Back Button */}
+        <Link
+          to="/products"
+          className="inline-flex items-center text-purple-700 hover:text-purple-900 mb-6 transition-colors"
+        >
+          <ChevronLeft className="h-5 w-5 mr-1" />
           Back to Products
-        </span>
-      </button>
+        </Link>
 
-      <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
-        <div className="lg:flex">
-          {/* Product Image */}
-          <div className="lg:w-1/2">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-64 sm:h-80 lg:h-full object-cover"
-            />
-          </div>
-
-          {/* Product Details */}
-          <div className="lg:w-1/2 p-4 sm:p-6 lg:p-8">
-            {/* Header Section */}
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4">
-              <div className="mb-4 sm:mb-0">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-                  {product.name}
-                </h1>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                  {product.category.toLowerCase()}
-                </span>
-              </div>
-              <div className="text-2xl sm:text-3xl font-bold text-gray-900">
-                {product.discount > 0 ? (
-                  <div className="flex flex-col items-end">
-                    <span className="line-through text-gray-500 text-lg sm:text-xl">
-                      ${product.price.toFixed(2)}
-                    </span>
-                    <span className="text-purple-600">
-                      ${product.discount.toFixed(2)}
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="md:flex">
+            {/* Product Image */}
+            <div className="md:w-1/2">
+              <div className="h-64 md:h-96 lg:h-[500px] relative">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                />
+                {hasDiscount && (
+                  <div className="absolute top-4 left-4">
+                    <span className="bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+                      -{discountPercentage}% OFF
                     </span>
                   </div>
-                ) : (
-                  `$${product.price.toFixed(2)}`
                 )}
               </div>
             </div>
 
-            {/* Availability */}
-            <div className="flex items-center mb-6">
-              <div className={`flex items-center ${availabilityColor} mr-2`}>
-                {availabilityIcon}
+            {/* Product Details */}
+            <div className="md:w-1/2 p-6 md:p-8">
+              <div className="mb-4">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                  {product.category}
+                </span>
               </div>
-              <span className={`font-medium ${availabilityColor}`}>
-                {product.availability}
-              </span>
-            </div>
 
-            {/* Description */}
-            <div className="mb-6 lg:mb-8">
-              <h3 className="text-lg font-medium mb-2">Description</h3>
-              <p className="text-gray-700 leading-relaxed">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                {product.name}
+              </h1>
+
+              <div className="mb-6">
+                {hasDiscount ? (
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl md:text-3xl font-bold text-red-600">
+                      Rs. {product.discount.toFixed(2)}
+                    </span>
+                    <span className="text-lg text-gray-500 line-through">
+                      Rs. {product.price.toFixed(2)}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-2xl md:text-3xl font-bold text-gray-900">
+                    Rs. {product.price.toFixed(2)}
+                  </span>
+                )}
+              </div>
+
+              <div className="mb-6">
+                <div
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                    product.availability === "In Stock"
+                      ? "bg-green-100 text-green-800"
+                      : product.availability === "Out of Stock"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-yellow-100 text-yellow-800"
+                  }`}
+                >
+                  {product.availability === "In Stock" ? (
+                    <Check className="h-4 w-4 mr-1" />
+                  ) : (
+                    <AlertTriangle className="h-4 w-4 mr-1" />
+                  )}
+                  {product.availability}
+                </div>
+              </div>
+
+              <p className="text-gray-600 mb-8 leading-relaxed">
                 {product.description}
               </p>
-            </div>
 
-            {/* Specifications */}
-            <div className="mb-6 lg:mb-8">
-              <h3 className="text-lg font-medium mb-4">Specifications</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-4">
-                {Object.entries(product.specs).map(([key, value]) => (
-                  <div key={key} className="flex flex-col sm:flex-row">
-                    <span className="font-medium text-gray-700 sm:mr-2 capitalize">
-                      {key}:
-                    </span>
-                    <span className="text-gray-600">{value}</span>
-                  </div>
-                ))}
+              {/* Specifications */}
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold mb-4">Specifications</h3>
+                <div className="space-y-3">
+                  {Object.entries(product.specs).map(([key, value]) => (
+                    <div
+                      key={key}
+                      className="flex justify-between py-2 border-b border-gray-200"
+                    >
+                      <span className="font-medium text-gray-700 capitalize">
+                        {key.replace(/([A-Z])/g, " $1").trim()}
+                      </span>
+                      <span className="text-gray-600">{value}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Action Buttons */}
-            <div className="mt-16 mb-4">
-              <Link
-                to="#"
-                className="w-full sm:w-auto text-center px-6 py-3 bg-transparent border border-purple-700 text-purple-700 rounded-md font-medium hover:bg-purple-50 transition-colors"
-              >
-                Contact Sales
-              </Link>
+              {/* Product ID */}
+              <div className="text-sm text-gray-500 mb-6">
+                Product ID: {product.productId}
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-4">
+                <button
+                  disabled={product.availability === "Out of Stock"}
+                  className={`flex-1 py-3 px-6 rounded-md font-medium transition-colors ${
+                    product.availability === "In Stock"
+                      ? "bg-purple-600 text-white hover:bg-purple-700"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
+                >
+                  {product.availability === "In Stock"
+                    ? "Contact for Quote"
+                    : "Out of Stock"}
+                </button>
+                <Link
+                  to={`/products?category=${encodeURIComponent(
+                    product.category
+                  )}`}
+                  className="px-6 py-3 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors font-medium"
+                >
+                  View Similar
+                </Link>
+              </div>
             </div>
           </div>
         </div>

@@ -109,19 +109,19 @@ const ProductTable = ({
                       {product.discount > 0 ? (
                         <div className="space-y-1">
                           <span className="line-through text-gray-500 text-sm">
-                            ${product.price.toFixed(2)}
+                            Rs. {product.price.toFixed(2)}
                           </span>
                           <div className="text-purple-600 font-bold text-lg">
-                            ${product.discount.toFixed(2)}
+                            Rs. {product.discount.toFixed(2)}
                           </div>
                           <div className="text-xs text-green-600">
-                            Save $
+                            Save Rs.
                             {(product.price - product.discount).toFixed(2)}
                           </div>
                         </div>
                       ) : (
                         <span className="text-gray-900 font-bold text-lg">
-                          ${product.price.toFixed(2)}
+                          Rs. {product.price.toFixed(2)}
                         </span>
                       )}
                     </div>
@@ -173,7 +173,7 @@ const ProductTable = ({
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Product ID:</span>
                   <span className="text-gray-900 font-mono text-sm">
-                    {product.id}
+                    {product.productId}
                   </span>
                 </div>
               </div>
@@ -211,14 +211,14 @@ const ProductTable = ({
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {products.map((product) => (
-              <React.Fragment key={product.id}>
+              <React.Fragment key={product._id}>
                 <tr
                   className={`cursor-pointer transition-all duration-200 ease-in-out hover:bg-blue-50 hover:shadow-sm ${
-                    expandedProductId === product.id
+                    expandedProductId === product._id
                       ? "bg-blue-100 shadow-md"
                       : ""
                   }`}
-                  onClick={() => handleRowClick(product.id)}
+                  onClick={() => handleRowClick(product._id)}
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
@@ -235,7 +235,7 @@ const ProductTable = ({
                             {product.name}
                           </div>
                           <div className="ml-2 flex-shrink-0">
-                            {expandedProductId === product.id ? (
+                            {expandedProductId === product._id ? (
                               <ChevronUp
                                 size={16}
                                 className="text-gray-400 transition-transform duration-200"
@@ -261,14 +261,14 @@ const ProductTable = ({
                       {product.discount > 0 ? (
                         <div className="flex flex-col">
                           <span className="line-through text-gray-500 text-xs">
-                            ${product.price.toFixed(2)}
+                            Rs. {product.price.toFixed(2)}
                           </span>
                           <span className="text-purple-600 font-medium">
-                            ${product.discount.toFixed(2)}
+                            Rs. {product.discount.toFixed(2)}
                           </span>
                         </div>
                       ) : (
-                        `$${product.price.toFixed(2)}`
+                        `Rs. ${product.price.toFixed(2)}`
                       )}
                     </div>
                   </td>
@@ -293,7 +293,7 @@ const ProductTable = ({
                           checked={product.featured}
                           onChange={(e) => {
                             e.stopPropagation();
-                            handleFeaturedToggle(product.id, product.featured);
+                            handleFeaturedToggle(product._id, product.featured);
                           }}
                           className="sr-only peer"
                         />
@@ -324,13 +324,13 @@ const ProductTable = ({
                       className="inline-block"
                     >
                       <DeleteConfirmation
-                        onConfirm={() => onDeleteProduct(product.id)}
+                        onConfirm={() => onDeleteProduct(product._id)}
                         itemName={product.name}
                       />
                     </div>
                   </td>
                 </tr>
-                {expandedProductId === product.id && (
+                {expandedProductId === product._id && (
                   <ExpandedProductDetails product={product} />
                 )}
               </React.Fragment>
@@ -343,9 +343,9 @@ const ProductTable = ({
       <div className="lg:hidden space-y-3">
         {products.map((product) => (
           <div
-            key={product.id}
+            key={product._id}
             className={`bg-white border border-gray-200 rounded-xl shadow-sm transition-all duration-200 ease-in-out ${
-              expandedProductId === product.id
+              expandedProductId === product._id
                 ? "shadow-lg border-purple-200"
                 : "hover:shadow-md hover:border-gray-300"
             }`}
@@ -353,7 +353,7 @@ const ProductTable = ({
             {/* Main Product Row - Clean and Simple */}
             <div
               className="p-4 cursor-pointer"
-              onClick={() => handleRowClick(product.id)}
+              onClick={() => handleRowClick(product._id)}
             >
               <div className="flex items-center space-x-4">
                 {/* Product Image */}
@@ -380,15 +380,15 @@ const ProductTable = ({
                           {product.discount > 0 ? (
                             <div className="flex items-center space-x-2">
                               <span className="line-through text-gray-400 text-xs">
-                                ${product.price.toFixed(2)}
+                                Rs. {product.price.toFixed(2)}
                               </span>
                               <span className="text-purple-600 font-semibold">
-                                ${product.discount.toFixed(2)}
+                                Rs. {product.discount.toFixed(2)}
                               </span>
                             </div>
                           ) : (
                             <span className="text-gray-900 font-semibold">
-                              ${product.price.toFixed(2)}
+                              Rs. {product.price.toFixed(2)}
                             </span>
                           )}
                         </div>
@@ -408,7 +408,7 @@ const ProductTable = ({
 
                     {/* Expand/Collapse Indicator */}
                     <div className="flex-shrink-0 ml-2">
-                      {expandedProductId === product.id ? (
+                      {expandedProductId === product._id ? (
                         <ChevronUp
                           size={18}
                           className="[@media(min-width:570px)]:w-5 [@media(min-width:570px)]:h-5 text-purple-500 transition-transform duration-200"
@@ -426,7 +426,7 @@ const ProductTable = ({
             </div>
 
             {/* Expanded Content - Actions and Details */}
-            {expandedProductId === product.id && (
+            {expandedProductId === product._id && (
               <div className="border-t border-gray-200">
                 {/* Action Buttons Section */}
                 <div className="px-4 py-3 bg-gray-50 rounded-b-xl">
@@ -459,7 +459,7 @@ const ProductTable = ({
                       </button>
                       <div onClick={(e) => e.stopPropagation()}>
                         <DeleteConfirmation
-                          onConfirm={() => onDeleteProduct(product.id)}
+                          onConfirm={() => onDeleteProduct(product._id)}
                           itemName={product.name}
                         >
                           <button className="flex items-center space-x-1 px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors text-xs [@media(min-width:570px)]:text-sm font-medium">
@@ -481,11 +481,19 @@ const ProductTable = ({
                           checked={product.featured}
                           onChange={(e) => {
                             e.stopPropagation();
-                            handleFeaturedToggle(product.id, product.featured);
+                            handleFeaturedToggle(product._id, product.featured);
                           }}
                           className="sr-only peer"
                         />
                         <div className="relative mr-1 w-11 h-6 bg-gray-200 rounded-full peer-focus:outline-none peer-checked:bg-purple-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:w-5 after:h-5 after:bg-white after:border after:border-gray-300 after:rounded-full after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
+                        <Star
+                          size={16}
+                          className={`ml-2 transition-colors ${
+                            product.featured
+                              ? "text-yellow-500 fill-yellow-500"
+                              : "text-gray-400"
+                          }`}
+                        />
                       </label>
                     </div>
                   </div>
@@ -517,7 +525,7 @@ const ProductTable = ({
                         <div className="flex justify-between">
                           <span className="text-gray-600">Original Price:</span>
                           <span className="text-gray-900 font-medium">
-                            ${product.price.toFixed(2)}
+                            Rs. {product.price.toFixed(2)}
                           </span>
                         </div>
                         {product.discount > 0 && (
@@ -525,13 +533,14 @@ const ProductTable = ({
                             <div className="flex justify-between">
                               <span className="text-gray-600">Sale Price:</span>
                               <span className="text-purple-600 font-bold">
-                                ${product.discount.toFixed(2)}
+                                Rs. {product.discount.toFixed(2)}
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-gray-600">You Save:</span>
                               <span className="text-green-600 font-medium">
-                                ${(product.price - product.discount).toFixed(2)}
+                                Rs.{" "}
+                                {(product.price - product.discount).toFixed(2)}
                               </span>
                             </div>
                           </>
@@ -571,7 +580,7 @@ const ProductTable = ({
                           Product ID:
                         </span>
                         <span className="text-gray-900 font-mono text-xs [@media(min-width:570px)]:text-sm">
-                          {product.id}
+                          {product.productId}
                         </span>
                       </div>
                     </div>

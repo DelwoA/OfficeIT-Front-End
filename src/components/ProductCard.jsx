@@ -7,7 +7,7 @@ const ProductCard = ({ product }) => {
     : 0;
 
   return (
-    <Link to={`/products/${product.id}`} className="group h-full">
+    <Link to={`/products/${product._id}`} className="group h-full">
       <div className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl h-full flex flex-col">
         <div className="h-40 sm:h-48 overflow-hidden relative">
           <img
@@ -40,15 +40,15 @@ const ProductCard = ({ product }) => {
               {hasDiscount ? (
                 <>
                   <span className="text-xs sm:text-sm text-gray-400 line-through">
-                    ${product.price.toFixed(2)}
+                    Rs. {product.price.toFixed(2)}
                   </span>
                   <span className="text-base sm:text-lg font-bold text-red-600">
-                    ${product.discount.toFixed(2)}
+                    Rs. {product.discount.toFixed(2)}
                   </span>
                 </>
               ) : (
                 <span className="text-base sm:text-lg font-bold text-gray-900">
-                  ${product.price.toFixed(2)}
+                  Rs. {product.price.toFixed(2)}
                 </span>
               )}
             </div>
