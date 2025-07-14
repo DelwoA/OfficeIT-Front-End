@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { Facebook, Mail, Phone, MapPin } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 // Custom WhatsApp icon component to match Lucide React styling
 const WhatsAppIcon = ({ size = 20, className = "" }) => (
@@ -15,6 +17,47 @@ const WhatsAppIcon = ({ size = 20, className = "" }) => (
 );
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Backend URL from environment variables
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!email.trim()) {
+      toast.error("Please enter your email address");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/newsletter`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Successfully subscribed to newsletter!");
+        setEmail(""); // Clear the input
+      } else {
+        toast.error(data.message || "Failed to subscribe to newsletter");
+      }
+    } catch (error) {
+      console.error("Newsletter subscription error:", error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <footer className="bg-gray-900 text-white">
       <div className="container mx-auto px-7 py-12 md:py-16">
@@ -152,17 +195,21 @@ const Footer = () => {
             <p className="text-gray-400 mb-6 text-sm leading-relaxed">
               Subscribe to our newsletter for special offers and updates.
             </p>
-            <form className="space-y-3">
+            <form onSubmit={handleNewsletterSubmit} className="space-y-3">
               <input
                 type="email"
                 placeholder="Your email"
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
+                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm disabled:opacity-50"
               />
               <button
                 type="submit"
-                className="w-full px-3 py-2 bg-gradient-to-r from-purple-700 to-pink-500 text-white rounded-md hover:opacity-90 transition-opacity text-sm font-medium"
+                disabled={isLoading}
+                className="w-full px-3 py-2 bg-gradient-to-r from-purple-700 to-pink-500 text-white rounded-md hover:opacity-90 transition-opacity text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Subscribe
+                {isLoading ? "Subscribing..." : "Subscribe"}
               </button>
             </form>
           </div>

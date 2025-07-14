@@ -162,7 +162,7 @@ const ProductCategoriesSection = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes float-slow {
           0%,
           100% {
