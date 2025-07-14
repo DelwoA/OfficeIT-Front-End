@@ -8,6 +8,8 @@ import {
   DollarSign,
   FileText,
   Settings,
+  Upload,
+  X,
 } from "lucide-react";
 import {
   Dialog,
@@ -46,6 +48,10 @@ const AddProductModal = ({
     specs: {},
   });
 
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
   const [specFields, setSpecFields] = useState([{ key: "", value: "" }]);
 
   const [errors, setErrors] = useState({});
@@ -70,6 +76,92 @@ const AddProductModal = ({
         ...prev,
         [name]: "",
       }));
+    }
+  };
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      processFile(file);
+    }
+  };
+
+  const handleFileDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      processFile(file);
+    }
+  };
+
+  const processFile = (file) => {
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      setErrors((prev) => ({ ...prev, image: "Please select an image file" }));
+      return;
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setErrors((prev) => ({
+        ...prev,
+        image: "Image size must be less than 5MB",
+      }));
+      return;
+    }
+
+    setSelectedFile(file);
+
+    // Create image preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setImagePreview(e.target.result);
+    };
+    reader.readAsDataURL(file);
+
+    // Clear any previous errors
+    if (errors.image) {
+      setErrors((prev) => ({ ...prev, image: "" }));
+    }
+  };
+
+  const removeSelectedFile = () => {
+    setSelectedFile(null);
+    setImagePreview(null);
+    setFormData((prev) => ({ ...prev, image: "" }));
+  };
+
+  const uploadImageToCloudinary = async () => {
+    if (!selectedFile) return null;
+
+    setUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+
+      const response = await fetch(
+        "http://localhost:8000/api/products/upload-image",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to upload image");
+      }
+
+      const data = await response.json();
+      return data.url;
+    } catch (error) {
+      console.error("Image upload error:", error);
+      setErrors((prev) => ({
+        ...prev,
+        image: "Failed to upload image. Please try again.",
+      }));
+      return null;
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -121,7 +213,7 @@ const AddProductModal = ({
     if (!formData.price || parseFloat(formData.price) <= 0)
       newErrors.price = "Valid price is required";
     if (!formData.category) newErrors.category = "Category is required";
-    if (!formData.image.trim()) newErrors.image = "Image URL is required";
+    if (!selectedFile) newErrors.image = "Product image is required";
     if (!formData.description.trim())
       newErrors.description = "Description is required";
 
@@ -148,21 +240,37 @@ const AddProductModal = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
-    // Prepare product data for backend (no need to generate ID, backend handles it)
-    const newProduct = {
-      ...formData,
-      price: parseFloat(formData.price),
-      discount: formData.discount ? parseFloat(formData.discount) : 0,
-      featured: false, // New products are not featured by default
-    };
+    try {
+      // First upload the image to Cloudinary
+      const imageUrl = await uploadImageToCloudinary();
+      if (!imageUrl) {
+        // Error already set in uploadImageToCloudinary
+        return;
+      }
 
-    onAddProduct(newProduct);
-    handleClose();
+      // Prepare product data for backend (no need to generate ID, backend handles it)
+      const newProduct = {
+        ...formData,
+        image: imageUrl, // Use the uploaded image URL
+        price: parseFloat(formData.price),
+        discount: formData.discount ? parseFloat(formData.discount) : 0,
+        featured: false, // New products are not featured by default
+      };
+
+      onAddProduct(newProduct);
+      handleClose();
+    } catch (error) {
+      console.error("Error submitting product:", error);
+      setErrors((prev) => ({
+        ...prev,
+        image: "Failed to create product. Please try again.",
+      }));
+    }
   };
 
   const handleClose = () => {
@@ -177,6 +285,9 @@ const AddProductModal = ({
       specs: {},
     });
     setSpecFields([{ key: "", value: "" }]);
+    setSelectedFile(null);
+    setImagePreview(null);
+    setUploadingImage(false);
     setErrors({});
     onClose();
   };
@@ -345,29 +456,84 @@ const AddProductModal = ({
           </div>
 
           {/* Product Details Section */}
-          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6 border border-green-200">
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-800">
-              <FileText className="w-5 h-5 text-green-600" />
+              <FileText className="w-5 h-5 text-blue-600" />
               Product Details
             </h3>
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label
-                  htmlFor="image"
-                  className="text-sm font-medium text-gray-700"
-                >
+                <Label className="text-sm font-medium text-gray-700 flex items-center">
                   <Image className="w-4 h-4 inline mr-1" />
-                  Image URL *
+                  Product Image *
                 </Label>
-                <Input
-                  id="image"
-                  name="image"
-                  value={formData.image}
-                  onChange={handleInputChange}
-                  placeholder="https://example.com/product-image.jpg"
-                  className={`mt-1 ${errors.image ? "border-red-500" : ""}`}
-                />
+
+                {!selectedFile ? (
+                  <div
+                    className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer hover:border-blue-400 hover:bg-blue-50 ${
+                      errors.image
+                        ? "border-red-500 bg-red-50"
+                        : "border-gray-300"
+                    }`}
+                    onDrop={handleFileDrop}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDragEnter={(e) => e.preventDefault()}
+                    onClick={() =>
+                      document.getElementById("image-upload").click()
+                    }
+                  >
+                    <Upload className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                    <p className="text-lg font-medium text-gray-600 mb-2">
+                      Drop your image here, or click to browse
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Supports: JPG, PNG, GIF (Max 5MB)
+                    </p>
+                    <input
+                      id="image-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+                  </div>
+                ) : (
+                  <div className="relative bg-gradient-to-r from-slate-200 to-stone-100 rounded-lg p-4 border border-zinc-300">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="w-24 h-24 object-cover rounded-lg border"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          {selectedFile.name}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                        </p>
+                        <div className="mt-2 flex items-center gap-2">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Ready to upload
+                          </span>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={removeSelectedFile}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 {errors.image && (
                   <p className="text-red-500 text-xs">{errors.image}</p>
                 )}
@@ -473,10 +639,20 @@ const AddProductModal = ({
             </Button>
             <Button
               type="submit"
-              className="px-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              disabled={uploadingImage}
+              className="px-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Package className="w-4 h-4" />
-              Add Product
+              {uploadingImage ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  Uploading...
+                </>
+              ) : (
+                <>
+                  <Package className="w-4 h-4 mr-2" />
+                  Add Product
+                </>
+              )}
             </Button>
           </div>
         </form>
