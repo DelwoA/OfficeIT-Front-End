@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Edit, Trash2, ChevronDown, ChevronUp, Star } from "lucide-react";
 import DeleteConfirmation from "@/components/DeleteConfirmation";
 import { toast } from "sonner";
+import { formatPrice } from "@/lib/utils";
 
 const ProductTable = ({
   products,
@@ -19,8 +20,8 @@ const ProductTable = ({
 
     if (!currentFeaturedState) {
       // Trying to feature a product
-      if (featuredCount >= 5) {
-        toast.error("Maximum of 5 products can be featured at a time");
+      if (featuredCount >= 8) {
+        toast.error("Maximum of 8 products can be featured at a time");
         return;
       }
     }
@@ -109,19 +110,19 @@ const ProductTable = ({
                       {product.discount > 0 ? (
                         <div className="space-y-1">
                           <span className="line-through text-gray-500 text-sm">
-                            Rs. {product.price.toFixed(2)}
+                            Rs. {formatPrice(product.price)}
                           </span>
                           <div className="text-purple-600 font-bold text-lg">
-                            Rs. {product.discount.toFixed(2)}
+                            Rs. {formatPrice(product.discount)}
                           </div>
                           <div className="text-xs text-green-600">
                             Save Rs.
-                            {(product.price - product.discount).toFixed(2)}
+                            {formatPrice(product.price - product.discount)}
                           </div>
                         </div>
                       ) : (
                         <span className="text-gray-900 font-bold text-lg">
-                          Rs. {product.price.toFixed(2)}
+                          Rs. {formatPrice(product.price)}
                         </span>
                       )}
                     </div>
@@ -135,7 +136,7 @@ const ProductTable = ({
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Status:</span>
                     <span
-                      className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      className={`px-2 py-0.5 sm:px-3 sm:py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                         product.availability === "In Stock"
                           ? "bg-green-100 text-green-800"
                           : product.availability === "Out of Stock"
@@ -261,14 +262,14 @@ const ProductTable = ({
                       {product.discount > 0 ? (
                         <div className="flex flex-col">
                           <span className="line-through text-gray-500 text-xs">
-                            Rs. {product.price.toFixed(2)}
+                            Rs. {formatPrice(product.price)}
                           </span>
                           <span className="text-purple-600 font-medium">
-                            Rs. {product.discount.toFixed(2)}
+                            Rs. {formatPrice(product.discount)}
                           </span>
                         </div>
                       ) : (
-                        `Rs. ${product.price.toFixed(2)}`
+                        `Rs. ${formatPrice(product.price)}`
                       )}
                     </div>
                   </td>
@@ -375,34 +376,23 @@ const ProductTable = ({
                       <p className="text-xs [@media(min-width:570px)]:text-sm text-gray-500 mt-1">
                         {product.category}
                       </p>
-                      <div className="mt-2 flex items-center justify-between">
+                      <div className="mt-2">
                         <div className="text-xs [@media(min-width:570px)]:text-sm font-medium text-gray-900">
                           {product.discount > 0 ? (
                             <div className="flex items-center space-x-2">
                               <span className="line-through text-gray-400 text-xs">
-                                Rs. {product.price.toFixed(2)}
+                                Rs. {formatPrice(product.price)}
                               </span>
                               <span className="text-purple-600 font-semibold">
-                                Rs. {product.discount.toFixed(2)}
+                                Rs. {formatPrice(product.discount)}
                               </span>
                             </div>
                           ) : (
                             <span className="text-gray-900 font-semibold">
-                              Rs. {product.price.toFixed(2)}
+                              Rs. {formatPrice(product.price)}
                             </span>
                           )}
                         </div>
-                        <span
-                          className={`px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            product.availability === "In Stock"
-                              ? "bg-green-100 text-green-800"
-                              : product.availability === "Out of Stock"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}
-                        >
-                          {product.availability}
-                        </span>
                       </div>
                     </div>
 
@@ -516,6 +506,21 @@ const ProductTable = ({
                       </p>
                     </div>
 
+                    {/* Availability Badge */}
+                    <div className="flex justify-center">
+                      <span
+                        className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          product.availability === "In Stock"
+                            ? "bg-green-100 text-green-800"
+                            : product.availability === "Out of Stock"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}
+                      >
+                        {product.availability}
+                      </span>
+                    </div>
+
                     {/* Pricing Details */}
                     <div className="bg-gray-50 rounded-lg p-3">
                       <h4 className="text-sm [@media(min-width:570px)]:text-sm font-semibold text-gray-900 mb-2">
@@ -525,7 +530,7 @@ const ProductTable = ({
                         <div className="flex justify-between">
                           <span className="text-gray-600">Original Price:</span>
                           <span className="text-gray-900 font-medium">
-                            Rs. {product.price.toFixed(2)}
+                            Rs. {formatPrice(product.price)}
                           </span>
                         </div>
                         {product.discount > 0 && (
@@ -533,14 +538,14 @@ const ProductTable = ({
                             <div className="flex justify-between">
                               <span className="text-gray-600">Sale Price:</span>
                               <span className="text-purple-600 font-bold">
-                                Rs. {product.discount.toFixed(2)}
+                                Rs. {formatPrice(product.discount)}
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-gray-600">You Save:</span>
                               <span className="text-green-600 font-medium">
                                 Rs.{" "}
-                                {(product.price - product.discount).toFixed(2)}
+                                {formatPrice(product.price - product.discount)}
                               </span>
                             </div>
                           </>

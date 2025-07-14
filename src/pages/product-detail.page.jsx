@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { getProductById } from "@/lib/products";
+import { formatPrice } from "@/lib/utils";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -168,15 +169,15 @@ const ProductDetailPage = () => {
                 {hasDiscount ? (
                   <div className="flex items-center gap-3">
                     <span className="text-2xl md:text-3xl font-bold text-red-600">
-                      Rs. {product.discount.toFixed(2)}
+                      Rs. {formatPrice(product.discount)}
                     </span>
                     <span className="text-lg text-gray-500 line-through">
-                      Rs. {product.price.toFixed(2)}
+                      Rs. {formatPrice(product.price)}
                     </span>
                   </div>
                 ) : (
                   <span className="text-2xl md:text-3xl font-bold text-gray-900">
-                    Rs. {product.price.toFixed(2)}
+                    Rs. {formatPrice(product.price)}
                   </span>
                 )}
               </div>

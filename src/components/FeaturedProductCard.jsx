@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { formatPrice } from "@/lib/utils";
 
 const FeaturedProductCard = ({ product }) => {
   const hasDiscount = product.discount > 0;
@@ -40,20 +41,20 @@ const FeaturedProductCard = ({ product }) => {
               {hasDiscount ? (
                 <>
                   <span className="text-xs sm:text-sm text-gray-400 line-through">
-                    Rs. {product.price.toFixed(2)}
+                    Rs. {formatPrice(product.price)}
                   </span>
                   <span className="text-base sm:text-lg font-bold text-red-600">
-                    Rs. {product.discount.toFixed(2)}
+                    Rs. {formatPrice(product.discount)}
                   </span>
                 </>
               ) : (
                 <span className="text-base sm:text-lg font-bold text-gray-900">
-                  Rs. {product.price.toFixed(2)}
+                  Rs. {formatPrice(product.price)}
                 </span>
               )}
             </div>
             <span
-              className={`px-2 py-1 rounded text-xs font-medium ${
+              className={`px-1 py-0.5 sm:px-2 sm:py-1 rounded text-xs font-medium ${
                 product.availability === "In Stock"
                   ? "bg-green-100 text-green-800"
                   : product.availability === "Out of Stock"

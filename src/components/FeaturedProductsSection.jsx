@@ -46,10 +46,20 @@ const FeaturedProductsSection = () => {
     return null;
   }
 
-  // Only show featured section if exactly 4 or 5 products are featured
+  // Only show featured section if 4 or more products are featured (minimum 4, maximum 8)
   if (featuredProducts.length < 4) {
     return null;
   }
+
+  // Dynamic grid layout based on number of featured products
+  const getGridColumns = (count) => {
+    if (count === 4) return "lg:grid-cols-4";
+    if (count === 5) return "lg:grid-cols-5";
+    if (count === 6) return "lg:grid-cols-3 2xl:grid-cols-6"; // 3x2 for 1024px-1535px, 6x1 for 1536px+
+    if (count === 7) return "lg:grid-cols-4"; // 4 + 3 layout
+    if (count === 8) return "lg:grid-cols-4"; // 4 + 4 layout
+    return "lg:grid-cols-4"; // fallback
+  };
 
   return (
     <section className="py-16 bg-gray-50">
@@ -64,13 +74,9 @@ const FeaturedProductsSection = () => {
           </Link>
         </div>
         <div
-          className={`grid grid-cols-1 sm:grid-cols-2 ${
-            featuredProducts.length >= 4
-              ? "lg:grid-cols-4"
-              : featuredProducts.length === 3
-              ? "lg:grid-cols-3"
-              : "lg:grid-cols-2"
-          } gap-4 sm:gap-6`}
+          className={`grid grid-cols-1 sm:grid-cols-2 ${getGridColumns(
+            featuredProducts.length
+          )} gap-4 sm:gap-6`}
         >
           {featuredProducts.map((product) => (
             <FeaturedProductCard key={product._id} product={product} />

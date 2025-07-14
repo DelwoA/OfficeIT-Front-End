@@ -28,6 +28,7 @@ const AdminPage = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [isFeaturedInfoModalOpen, setIsFeaturedInfoModalOpen] = useState(false);
 
   // Fetch products and categories on component mount
   useEffect(() => {
@@ -91,6 +92,14 @@ const AdminPage = () => {
 
   const handleCategoryModalClose = () => {
     setIsCategoryModalOpen(false);
+  };
+
+  const handleFeaturedInfoModal = () => {
+    setIsFeaturedInfoModalOpen(true);
+  };
+
+  const handleFeaturedInfoModalClose = () => {
+    setIsFeaturedInfoModalOpen(false);
   };
 
   const handleAddNewProduct = async (newProduct) => {
@@ -355,7 +364,24 @@ const AdminPage = () => {
                     <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
                       Product Management
                     </h2>
-                    <FeaturedProductsInfoModal />
+                    <button
+                      onClick={handleFeaturedInfoModal}
+                      className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-md transition-colors duration-200"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <p className="text-sm text-gray-500">
                     Manage your product inventory and details
@@ -441,6 +467,12 @@ const AdminPage = () => {
           onClose={handleCategoryModalClose}
           products={productList}
           onUpdateCategories={handleUpdateCategories}
+        />
+
+        {/* Featured Products Info Modal */}
+        <FeaturedProductsInfoModal
+          isOpen={isFeaturedInfoModalOpen}
+          onClose={handleFeaturedInfoModalClose}
         />
       </div>
     </SignedIn>
