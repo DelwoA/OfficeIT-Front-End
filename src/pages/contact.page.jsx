@@ -17,6 +17,9 @@ const WhatsAppIcon = ({ size = 20, className = "" }) => (
 );
 
 const ContactPage = () => {
+  // Backend server URL obtained from environment variable
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -152,25 +155,42 @@ const ContactPage = () => {
     // Show loading toast immediately
     const loadingToastId = toast.loading("Sending your message...", {
       description: "Please wait while we process your request.",
+      classNames: {
+        description: "!text-slate-500",
+      },
     });
 
     try {
-      // Simulate processing time (replace with actual API call)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Prepare data for API call
+      const contactData = {
+        fullName: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        subject: formData.subject,
+        message: formData.message,
+      };
 
-      // Handle form submission here
-      console.log("Form submitted:", formData);
+      // Make API call to backend
+      const response = await fetch(`${BACKEND_URL}/api/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(contactData),
+      });
 
-      // Simulate form submission result (replace with actual API call)
-      const isSuccess = Math.random() > 0.2; // 80% success rate for demo
+      const result = await response.json();
 
-      if (isSuccess) {
+      if (response.ok && result.success) {
         // Update loading toast to success
         toast.success("Message sent successfully!", {
           id: loadingToastId,
           description:
             "Thank you for contacting us. We'll get back to you soon.",
           duration: 4000,
+          classNames: {
+            description: "!text-slate-500",
+          },
         });
 
         // Reset form on success
@@ -187,8 +207,12 @@ const ContactPage = () => {
         toast.error("Failed to send message", {
           id: loadingToastId,
           description:
+            result.message ||
             "Your message couldn't be delivered. Please try again or contact us directly at info@officeit.lk",
           duration: 6000,
+          classNames: {
+            description: "!text-slate-500",
+          },
         });
       }
     } catch (error) {
@@ -198,6 +222,9 @@ const ContactPage = () => {
         description:
           "An unexpected error occurred. Please check your connection and try again.",
         duration: 6000,
+        classNames: {
+          description: "!text-slate-500",
+        },
       });
     }
   };
