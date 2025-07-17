@@ -57,7 +57,7 @@ const LeadershipTeamSection = () => {
         <div className="flex items-center justify-center">
           <div className="bg-white rounded-lg overflow-hidden shadow-md w-[360px]">
             <img
-              src="public/chathuranga.jpeg"
+              src="chathuranga.jpeg"
               alt="Chathuranga Bandara, Managing Director"
               className="w-full h-48 sm:h-[360px] object-cover"
             />
