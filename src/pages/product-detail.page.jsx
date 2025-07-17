@@ -223,15 +223,19 @@ const ProductDetailPage = () => {
                 </div>
               </div>
 
-              {/* Product ID */}
-              <div className="text-sm text-gray-500 mb-6">
-                Product ID: {product.productId}
-              </div>
-
               {/* Actions */}
               <div className="flex gap-4">
                 <button
                   disabled={product.availability === "Out of Stock"}
+                  onClick={() => {
+                    if (product.availability === "In Stock") {
+                      navigate(
+                        `/contact?subject=${encodeURIComponent(
+                          `About ${product.name}`
+                        )}&focus=name`
+                      );
+                    }
+                  }}
                   className={`flex-1 py-3 px-6 rounded-md font-medium transition-colors ${
                     product.availability === "In Stock"
                       ? "bg-purple-600 text-white hover:bg-purple-700"

@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import {
-  Monitor,
+  Laptop,
   Printer,
-  Server,
-  Package,
-  Coffee,
+  Cctv,
+  Keyboard,
+  Store,
   ChevronRight,
 } from "lucide-react";
 
@@ -72,13 +72,30 @@ const ProductCategoriesSection = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div className="p-6 md:p-8 text-center">
               <div className="bg-purple-100 rounded-full p-3 md:p-4 inline-flex mb-4 md:mb-6">
-                <Monitor size={24} className="md:w-9 md:h-9 text-purple-700" />
+                <Laptop className="md:w-9 md:h-9 text-purple-700" />
               </div>
               <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
                 Computers
               </h3>
               <p className="text-xs md:text-sm text-gray-600">
-                Laptops, desktops and workstations
+                Laptops and desktops
+              </p>
+            </div>
+          </Link>
+          <Link
+            to="/products?category=CCTV Cameras"
+            className="group relative overflow-hidden rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="p-6 md:p-8 text-center">
+              <div className="bg-purple-100 rounded-full p-3 md:p-4 inline-flex mb-4 md:mb-6">
+                <Cctv className="md:w-9 md:h-9 text-purple-700" />
+              </div>
+              <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
+                CCTV Cameras
+              </h3>
+              <p className="text-xs md:text-sm text-gray-600">
+                CCTV Cameras, DVRs, and related accessories
               </p>
             </div>
           </Link>
@@ -89,30 +106,13 @@ const ProductCategoriesSection = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div className="p-6 md:p-8 text-center">
               <div className="bg-purple-100 rounded-full p-3 md:p-4 inline-flex mb-4 md:mb-6">
-                <Printer size={24} className="md:w-9 md:h-9 text-purple-700" />
+                <Printer className="md:w-9 md:h-9 text-purple-700" />
               </div>
               <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
                 Printers
               </h3>
               <p className="text-xs md:text-sm text-gray-600">
-                Multifunction printers and scanners
-              </p>
-            </div>
-          </Link>
-          <Link
-            to="/products?category=Servers"
-            className="group relative overflow-hidden rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div className="p-6 md:p-8 text-center">
-              <div className="bg-purple-100 rounded-full p-3 md:p-4 inline-flex mb-4 md:mb-6">
-                <Server size={24} className="md:w-9 md:h-9 text-purple-700" />
-              </div>
-              <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
-                Servers
-              </h3>
-              <p className="text-xs md:text-sm text-gray-600">
-                Enterprise servers and storage
+                Multifunction photocopy machines and printers
               </p>
             </div>
           </Link>
@@ -123,30 +123,30 @@ const ProductCategoriesSection = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div className="p-6 md:p-8 text-center">
               <div className="bg-purple-100 rounded-full p-3 md:p-4 inline-flex mb-4 md:mb-6">
-                <Package size={24} className="md:w-9 md:h-9 text-purple-700" />
+                <Keyboard className="md:w-9 md:h-9 text-purple-700" />
               </div>
               <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
                 Accessories
               </h3>
               <p className="text-xs md:text-sm text-gray-600">
-                Keyboards, mice, and cables
+                Keyboards, mice, toners, speakers, external drives, etc.
               </p>
             </div>
           </Link>
           <Link
-            to="/products?category=Office Furniture"
+            to="/products?category=Retail Hardware Solutions"
             className="group relative overflow-hidden rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div className="p-6 md:p-8 text-center">
               <div className="bg-purple-100 rounded-full p-3 md:p-4 inline-flex mb-4 md:mb-6">
-                <Coffee size={24} className="md:w-9 md:h-9 text-purple-700" />
+                <Store className="md:w-9 md:h-9 text-purple-700" />
               </div>
               <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
-                Office Furniture
+                Retail Hardware Solutions
               </h3>
               <p className="text-xs md:text-sm text-gray-600">
-                Desks, chairs, and fixtures
+                POS and cash handling equipment, etc.
               </p>
             </div>
           </Link>

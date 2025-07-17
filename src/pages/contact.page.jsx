@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { Mail, Phone, MapPin, Clock, Send, Facebook } from "lucide-react";
 import { toast } from "sonner";
 
@@ -20,6 +20,10 @@ const ContactPage = () => {
   // Backend server URL obtained from environment variable
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
+  const [searchParams] = useSearchParams();
+  const formSectionRef = useRef(null);
+  const nameInputRef = useRef(null);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -29,6 +33,36 @@ const ContactPage = () => {
   });
 
   const [errors, setErrors] = useState({});
+
+  // Handle URL parameters on component mount
+  useEffect(() => {
+    const subject = searchParams.get("subject");
+    const focus = searchParams.get("focus");
+
+    if (subject) {
+      setFormData((prev) => ({
+        ...prev,
+        subject: subject,
+      }));
+    }
+
+    if (focus === "name") {
+      // Scroll to form section and focus on name input
+      setTimeout(() => {
+        if (formSectionRef.current) {
+          formSectionRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+        setTimeout(() => {
+          if (nameInputRef.current) {
+            nameInputRef.current.focus();
+          }
+        }, 500);
+      }, 100);
+    }
+  }, [searchParams]);
 
   // Validation functions
   const validateEmail = (email) => {
@@ -347,7 +381,7 @@ const ContactPage = () => {
       </section>
 
       {/* Contact Form and Social Media Section */}
-      <section className="py-16 lg:py-20 bg-white">
+      <section ref={formSectionRef} className="py-16 lg:py-20 bg-white">
         <div className="container mx-auto px-7">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
             {/* Contact Form */}
@@ -373,6 +407,7 @@ const ContactPage = () => {
                       type="text"
                       id="name"
                       name="name"
+                      ref={nameInputRef}
                       value={formData.name}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200 ${
@@ -427,7 +462,7 @@ const ContactPage = () => {
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200 ${
                         errors.phone ? "border-red-500" : "border-gray-300"
                       }`}
-                      placeholder="10-digit phone number"
+                      placeholder="e.g.: 0725828283"
                     />
                     {errors.phone && (
                       <p className="text-red-500 text-xs mt-1">

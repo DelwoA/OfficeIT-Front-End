@@ -99,10 +99,15 @@ const ProductsPage = () => {
 
   useEffect(() => {
     // Auto-focus search input if coming from navigation search
-    if (shouldFocusSearch && searchInputRef.current) {
-      searchInputRef.current.focus();
+    if (shouldFocusSearch) {
+      // Small delay to ensure the input is fully rendered
+      setTimeout(() => {
+        if (searchInputRef.current) {
+          searchInputRef.current.focus();
+        }
+      }, 100);
     }
-  }, [shouldFocusSearch]);
+  }, [shouldFocusSearch, loading]);
 
   // Show loading spinner while fetching data
   if (loading) {
